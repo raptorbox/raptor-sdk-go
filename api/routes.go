@@ -1,0 +1,64 @@
+package api
+
+const (
+	STREAM_LIST        string = "/stream/%s/%s"
+	STREAM_PUSH               = STREAM_LIST
+	STREAM_LAST_UPDATE        = STREAM_PUSH + "/lastUpdate"
+	STREAM_PULL               = STREAM_PUSH
+	STREAM_SEARCH             = STREAM_PUSH
+
+	ACTION_INVOKE = "/action/%s/%s"
+	ACTION_STATUS = ACTION_INVOKE
+
+	PERMISSION_CHECK = "/auth/check"
+	LOGIN            = "/auth/login"
+	LOGOUT           = LOGIN
+	REFRESH_TOKEN    = "/auth/refresh"
+
+	USER_CREATE      = "/auth/user"
+	USER_LIST        = USER_CREATE
+	USER_GET         = USER_CREATE + "/%s"
+	USER_IMPERSONATE = USER_GET + "/impersonate"
+	USER_UPDATE      = USER_GET
+	USER_DELETE      = USER_GET
+	USER_GET_ME      = "/auth/me"
+	USER_UPDATE_ME   = USER_GET_ME
+
+	TOKEN_CREATE = "/auth/token"
+	TOKEN_UPDATE = TOKEN_CREATE + "/%s"
+	TOKEN_DELETE = TOKEN_UPDATE
+	TOKEN_GET    = TOKEN_CREATE + "?uuid=%s"
+
+	ROLE_CREATE = "/auth/role"
+	ROLE_UPDATE = TOKEN_CREATE + "/%s"
+	ROLE_DELETE = TOKEN_UPDATE
+	ROLE_LIST   = TOKEN_CREATE
+
+	PROFILE_GET_ALL    = "/profile/%s"
+	PROFILE_GET        = PROFILE_GET_ALL + "/%s"
+	PROFILE_SET        = PROFILE_GET
+	PREFERENCES_DELETE = PROFILE_GET
+
+	PERMISSION_GET     = "/auth/permission/%s/%s"
+	PERMISSION_BY_USER = PERMISSION_GET + "/%s"
+	PERMISSION_SET     = PERMISSION_GET
+
+	TOKEN_PERMISSION_GET     = "/auth/permission/token/%s"
+	TOKEN_PERMISSION_BY_USER = TOKEN_PERMISSION_GET + "/%s"
+	TOKEN_PERMISSION_SET     = TOKEN_PERMISSION_GET
+
+	INVENTORY_LIST   = "/inventory/"
+	INVENTORY_SEARCH = INVENTORY_LIST + "search"
+	INVENTORY_CREATE = INVENTORY_LIST
+	INVENTORY_UPDATE = INVENTORY_LIST + "%s"
+	INVENTORY_LOAD   = INVENTORY_UPDATE
+	INVENTORY_DELETE = INVENTORY_UPDATE
+
+	TREE_LIST        = "/tree/"
+	TREE_CREATE      = TREE_LIST
+	TREE_GET         = TREE_LIST + "%s"
+	TREE_CHILDREN    = TREE_GET + "/children"
+	TREE_ADD         = TREE_GET
+	TREE_REMOVE      = TREE_GET
+	TREE_REMOVE_TREE = TREE_GET + "tree"
+)
