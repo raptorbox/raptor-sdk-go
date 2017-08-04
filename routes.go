@@ -1,4 +1,4 @@
-package api
+package raptor
 
 const (
 	STREAM_LIST        string = "/stream/%s/%s"

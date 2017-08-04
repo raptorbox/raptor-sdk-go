@@ -1,10 +1,9 @@
-package raptorbox
+package raptor
 
 import (
 	"errors"
 
-	"github.com/raptorbox/raptor-sdk-go/api"
-	"github.com/raptorbox/raptor-sdk-go/client"
+	"github.com/raptorbox/raptor-sdk-go/models"
 )
 
 //Config a client configuration
@@ -38,9 +37,9 @@ func (c *Config) GetURL() string {
 //Raptor the SDK API wrapper
 type Raptor struct {
 	config *Config
-	client *client.DefaultClient
+	client *DefaultClient
 
-	auth *api.Auth
+	auth *Auth
 }
 
 //GetContainer return the container
@@ -54,17 +53,17 @@ func (r *Raptor) GetConfig() *Config {
 }
 
 //GetClient return a client instance
-func (r *Raptor) GetClient() *client.IClient {
+func (r *Raptor) GetClient() *models.Client {
 	if r.client == nil {
-		r.client = client.NewDefaultClient(r)
+		r.client = NewDefaultClient(r)
 	}
 	return r.client
 }
 
 //Auth handles authentication API
-func (r *Raptor) Auth() *api.Auth {
+func (r *Raptor) Auth() *Auth {
 	if r.auth == nil {
-		r.auth = api.CreateAuth(r)
+		r.auth = CreateAuth(r)
 	}
 }
 

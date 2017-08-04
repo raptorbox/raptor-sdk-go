@@ -1,8 +1,9 @@
-package client
+package raptor
 
 import (
+	"encoding/json"
+
 	"github.com/parnurzeal/gorequest"
-	"github.com/raptorbox/raptor-sdk-go/client"
 	"github.com/raptorbox/raptor-sdk-go/models"
 )
 
@@ -16,8 +17,18 @@ func NewDefaultClient(c *models.Container) *DefaultClient {
 //DefaultClient IClient default implementation
 type DefaultClient struct {
 	container           *models.Container
-	request             *gorequest.SuperAgent
+	req                 *gorequest.SuperAgent
 	authorizationHeader string
+}
+
+//ToJSON convert the model to JSON string
+func (c *DefaultClient) ToJSON(i interface{}) ([]byte, error) {
+	return json.Marshal(i)
+}
+
+//FromJSON convert a raw value to a model
+func (c *DefaultClient) FromJSON(raw []byte, i interface{}) error {
+	return json.Unmarshal(raw, i)
 }
 
 //GetContainer return the container
@@ -41,9 +52,14 @@ func (c *DefaultClient) SetAuthorizationHeader(token string) {
 }
 
 //request
-func (c *DefaultClient) request(opts *Options) *SuperAgent {
+func (c *DefaultClient) request(opts *models.ClientOptions) *SuperAgent {
 
-	r := gorequest.New()
+	var r *gorequest.SuperAgent
+	if opts.NewClient {
+		r := gorequest.New()
+	} else {
+		r := c.req
+	}
 
 	r.Set("Content-Type", "application/json")
 	if c.authorizationHeader != "" {
@@ -62,32 +78,35 @@ func (c *DefaultClient) request(opts *Options) *SuperAgent {
 }
 
 //Get request
-func (c *DefaultClient) Get(url string, opts *Options) ([]bytes, error) {
+func (c *DefaultClient) Get(url string, opts *models.ClientOptions) ([]bytes, error) {
 	resp, bodyBytes, errs := c.request(opts).Get(url).EndBytes()
 	return bodyBytes, errs
 }
 
 //Delete request
-func (c *DefaultClient) Delete(url string, opts *Options) error {
-
+func (c *DefaultClient) Delete(url string, opts *models.ClientOptions) error {
+	resp, bodyBytes, errs := c.request(opts).Delete(url).EndBytes()
+	return bodyBytes, errs
 }
 
 //Post request
-func (c *DefaultClient) Post(url string, json interface{}, opts *Options) (interface{}, error) {
-
+func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOptions) (interface{}, error) {
+	resp, bodyBytes, errs := c.request(opts).Post(url, json).EndBytes()
+	return bodyBytes, errs
 }
 
 //Put request
-func (c *DefaultClient) Put(url string, json interface{}, opts *Options) (interface{}, error) {
-
+func (c *DefaultClient) Put(url string, json interface{}, opts *models.ClientOptions) (interface{}, error) {
+	resp, bodyBytes, errs := c.request(opts).Put(url, json).EndBytes()
+	return bodyBytes, errs
 }
 
 //Subscribe to topic
-func (c *DefaultClient) Subscribe(topic string, cb func(event Event)) {
+func (c *DefaultClient) Subscribe(topic string, cb func(event Event)) error {
 
 }
 
 //Unsubscribe from topic
-func (c *DefaultClient) Unsubscribe(topic string, cb func(event Event)) {
+func (c *DefaultClient) Unsubscribe(topic string, cb func(event Event)) error {
 
 }
