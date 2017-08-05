@@ -7,39 +7,37 @@ import (
 )
 
 //CreateAuth instantiate a new API client
-func CreateAuth(c models.Container) *Auth {
+func CreateAuth(r *Raptor) *Auth {
 	return &Auth{
-		container: c,
+		Raptor: r,
 	}
 }
 
 //Auth API client
 type Auth struct {
-	container models.Container
-	state     *models.LoginState
-}
-
-//GetContainer return the container
-func (a *Auth) GetContainer() models.Container {
-	return a.container
+	Raptor *Raptor
+	state  *models.LoginState
 }
 
 //GetConfig return the configuration
 func (a *Auth) GetConfig() models.Config {
-	return a.container.GetConfig()
+	return a.Raptor.GetConfig()
 }
 
 //GetClient return a client instance
-func (a *Auth) GetClient() *models.Client {
-	return a.container.GetClient()
+func (a *Auth) GetClient() models.Client {
+	return a.Raptor.GetClient()
 }
 
 //Login login a user with the provided credentials
 func (a *Auth) Login() (*models.LoginState, error) {
 
-	if a.GetConfig().GetToken() {
+	var raw []byte
+	var err error
+
+	if a.GetConfig().GetToken() != "" {
 		a.GetClient().SetAuthorizationHeader(a.GetConfig().GetToken())
-		raw, err := a.container.GetClient().Post(LOGIN, body, nil)
+		raw, err = a.GetClient().Get(USER_GET_ME, nil)
 	} else {
 
 		body := fmt.Sprintf(
@@ -47,15 +45,15 @@ func (a *Auth) Login() (*models.LoginState, error) {
 			a.GetConfig().GetUsername(),
 			a.GetConfig().GetPassword())
 
-		raw, err := a.container.GetClient().Post(LOGIN, body, nil)
-		if err != nil {
-			return nil, err
-		}
-
-		state := models.LoginState{}
-		err := a.GetClient().FromJSON(raw, &state)
-
-		return
+		raw, err = a.GetClient().Post(LOGIN, body, nil)
 	}
 
+	if err != nil {
+		return nil, err
+	}
+
+	state := &models.LoginState{}
+	err = a.GetClient().FromJSON(raw, state)
+
+	return state, nil
 }

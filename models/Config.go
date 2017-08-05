@@ -2,8 +2,8 @@ package models
 
 //Config config params interface
 type Config interface {
-	GetUsername()
-	GetPassword()
-	GetToken()
-	GetURL()
+	GetUsername() string
+	GetPassword() string
+	GetToken() string
+	GetURL() string
 }

@@ -8,15 +8,15 @@ import (
 )
 
 //NewDefaultClient initialize a default client
-func NewDefaultClient(c *models.Container) *DefaultClient {
+func NewDefaultClient(c *Raptor) *DefaultClient {
 	return &DefaultClient{
-		container: c,
+		Raptor: c,
 	}
 }
 
 //DefaultClient IClient default implementation
 type DefaultClient struct {
-	container           *models.Container
+	Raptor              *Raptor
 	req                 *gorequest.SuperAgent
 	authorizationHeader string
 }
@@ -31,18 +31,13 @@ func (c *DefaultClient) FromJSON(raw []byte, i interface{}) error {
 	return json.Unmarshal(raw, i)
 }
 
-//GetContainer return the container
-func (c *DefaultClient) GetContainer() models.Container {
-	return a.container
-}
-
 //GetConfig return the configuration
-func (c *DefaultClient) GetConfig() *models.Config {
-	return a.GetContainer().GetConfig()
+func (c *DefaultClient) GetConfig() *Config {
+	return c.Raptor.GetConfig()
 }
 
 //GetClient return a client instance
-func (c *DefaultClient) GetClient() *client.IClient {
+func (c *DefaultClient) GetClient() models.Client {
 	return c
 }
 
@@ -52,13 +47,13 @@ func (c *DefaultClient) SetAuthorizationHeader(token string) {
 }
 
 //request
-func (c *DefaultClient) request(opts *models.ClientOptions) *SuperAgent {
+func (c *DefaultClient) request(opts *models.ClientOptions) *gorequest.SuperAgent {
 
 	var r *gorequest.SuperAgent
 	if opts.NewClient {
-		r := gorequest.New()
+		r = gorequest.New()
 	} else {
-		r := c.req
+		r = c.req
 	}
 
 	r.Set("Content-Type", "application/json")
@@ -70,43 +65,50 @@ func (c *DefaultClient) request(opts *models.ClientOptions) *SuperAgent {
 		r.Timeout(opts.Timeout)
 	}
 
-	if opts.RepeatTimes > 0 {
+	if opts.RetryTime > 0 {
 		r.Retry(opts.RetryCount, opts.RetryTime, opts.RetryStatusCode)
 	}
 
 	return r
 }
 
+func handleErrors(errs []error) error {
+	if len(errs) > 0 {
+		return errs[0]
+	}
+	return nil
+}
+
 //Get request
-func (c *DefaultClient) Get(url string, opts *models.ClientOptions) ([]bytes, error) {
-	resp, bodyBytes, errs := c.request(opts).Get(url).EndBytes()
-	return bodyBytes, errs
+func (c *DefaultClient) Get(url string, opts *models.ClientOptions) ([]byte, error) {
+	_, responseBody, errs := c.request(opts).Get(url).EndBytes()
+	return responseBody, handleErrors(errs)
 }
 
 //Delete request
 func (c *DefaultClient) Delete(url string, opts *models.ClientOptions) error {
-	resp, bodyBytes, errs := c.request(opts).Delete(url).EndBytes()
-	return bodyBytes, errs
+	_, _, errs := c.request(opts).Delete(url).EndBytes()
+	return handleErrors(errs)
 }
 
 //Post request
-func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOptions) (interface{}, error) {
-	resp, bodyBytes, errs := c.request(opts).Post(url, json).EndBytes()
-	return bodyBytes, errs
+func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOptions) ([]byte, error) {
+	_, responseBody, errs := c.request(opts).Post(url).Send(json).EndBytes()
+	return responseBody, handleErrors(errs)
 }
 
 //Put request
-func (c *DefaultClient) Put(url string, json interface{}, opts *models.ClientOptions) (interface{}, error) {
-	resp, bodyBytes, errs := c.request(opts).Put(url, json).EndBytes()
-	return bodyBytes, errs
+func (c *DefaultClient) Put(url string, json interface{}, opts *models.ClientOptions) ([]byte, error) {
+	_, responseBody, errs := c.request(opts).Put(url).Send(json).EndBytes()
+	return responseBody, handleErrors(errs)
 }
 
 //Subscribe to topic
-func (c *DefaultClient) Subscribe(topic string, cb func(event Event)) error {
-
+func (c *DefaultClient) Subscribe(topic string, cb func(event models.Event)) error {
+	return nil
 }
 
 //Unsubscribe from topic
-func (c *DefaultClient) Unsubscribe(topic string, cb func(event Event)) error {
-
+func (c *DefaultClient) Unsubscribe(topic string, cb func(event models.Event)) error {
+	return nil
 }
