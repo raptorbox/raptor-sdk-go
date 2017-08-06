@@ -10,6 +10,7 @@ import (
 func CreateAuth(r *Raptor) *Auth {
 	return &Auth{
 		Raptor: r,
+		state:  &models.LoginState{},
 	}
 }
 

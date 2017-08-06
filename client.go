@@ -2,10 +2,23 @@ package raptor
 
 import (
 	"encoding/json"
+	"fmt"
+	"time"
 
 	"github.com/parnurzeal/gorequest"
 	"github.com/raptorbox/raptor-sdk-go/models"
 )
+
+// DefaultClientOptions create default client options
+func DefaultClientOptions() *models.ClientOptions {
+	return &models.ClientOptions{
+		NewClient:       false,
+		RetryCount:      3,
+		RetryStatusCode: 400,
+		RetryTime:       200,
+		Timeout:         time.Second * 10,
+	}
+}
 
 //NewDefaultClient initialize a default client
 func NewDefaultClient(c *Raptor) *DefaultClient {
@@ -49,10 +62,19 @@ func (c *DefaultClient) SetAuthorizationHeader(token string) {
 //request
 func (c *DefaultClient) request(opts *models.ClientOptions) *gorequest.SuperAgent {
 
+	if opts == nil {
+		opts = DefaultClientOptions()
+	}
+
 	var r *gorequest.SuperAgent
 	if opts.NewClient {
 		r = gorequest.New()
 	} else {
+
+		if c.req == nil {
+			c.req = gorequest.New()
+		}
+
 		r = c.req
 	}
 
@@ -79,27 +101,32 @@ func handleErrors(errs []error) error {
 	return nil
 }
 
+//url generate an url from basepath
+func (c *DefaultClient) url(url string) string {
+	return fmt.Sprintf("%s/%s", c.GetConfig().GetURL(), url)
+}
+
 //Get request
 func (c *DefaultClient) Get(url string, opts *models.ClientOptions) ([]byte, error) {
-	_, responseBody, errs := c.request(opts).Get(url).EndBytes()
+	_, responseBody, errs := c.request(opts).Get(c.url(url)).EndBytes()
 	return responseBody, handleErrors(errs)
 }
 
 //Delete request
 func (c *DefaultClient) Delete(url string, opts *models.ClientOptions) error {
-	_, _, errs := c.request(opts).Delete(url).EndBytes()
+	_, _, errs := c.request(opts).Delete(c.url(url)).EndBytes()
 	return handleErrors(errs)
 }
 
 //Post request
 func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOptions) ([]byte, error) {
-	_, responseBody, errs := c.request(opts).Post(url).Send(json).EndBytes()
+	_, responseBody, errs := c.request(opts).Post(c.url(url)).Send(json).EndBytes()
 	return responseBody, handleErrors(errs)
 }
 
 //Put request
 func (c *DefaultClient) Put(url string, json interface{}, opts *models.ClientOptions) ([]byte, error) {
-	_, responseBody, errs := c.request(opts).Put(url).Send(json).EndBytes()
+	_, responseBody, errs := c.request(opts).Put(c.url(url)).Send(json).EndBytes()
 	return responseBody, handleErrors(errs)
 }
 

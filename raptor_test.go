@@ -1,8 +1,11 @@
 package raptor
 
-import "testing"
+import (
+	"log"
+	"testing"
+)
 
-func NewRaptorTest(t *testing.T) {
+func TestNewRaptor(t *testing.T) {
 
 	raptor, err := NewRaptorWithCredentials("http://raptor.local", "admin", "admin")
 	if err != nil {
@@ -10,6 +13,12 @@ func NewRaptorTest(t *testing.T) {
 		return
 	}
 
-	raptor.Auth().Login()
+	state, err := raptor.Auth().Login()
+	if err != nil {
+		t.FailNow()
+		return
+	}
+
+	log.Printf("User logged in %s", state.User.Email)
 
 }
