@@ -56,5 +56,42 @@ func (a *Auth) Login() (*models.LoginState, error) {
 	state := &models.LoginState{}
 	err = a.GetClient().FromJSON(raw, state)
 
+	if err != nil {
+		return nil, err
+	}
+
 	return state, nil
+}
+
+//Logout logout an user
+func (a *Auth) Logout() error {
+
+	_, err := a.GetClient().Post(LOGOUT, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	a.state = nil
+
+	return nil
+}
+
+//Refresh a user token
+func (a *Auth) Refresh() (*models.LoginState, error) {
+
+	raw, err := a.GetClient().Get(REFRESH_TOKEN, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	state := &models.LoginState{}
+	err = a.GetClient().FromJSON(raw, state)
+
+	if err != nil {
+		return nil, err
+	}
+
+	a.state = state
+
+	return a.state, nil
 }

@@ -39,7 +39,8 @@ type Raptor struct {
 	config *Config
 	client *DefaultClient
 
-	auth *Auth
+	auth      *Auth
+	inventory *Inventory
 }
 
 //GetConfig return the configuration
@@ -61,6 +62,14 @@ func (r *Raptor) Auth() *Auth {
 		r.auth = CreateAuth(r)
 	}
 	return r.auth
+}
+
+//Inventory handles Inventory API
+func (r *Raptor) Inventory() *Auth {
+	if r.inventory == nil {
+		r.inventory = CreateInventory(r)
+	}
+	return r.inventory
 }
 
 //SetCredentials set username and password
