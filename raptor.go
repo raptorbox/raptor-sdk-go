@@ -65,7 +65,7 @@ func (r *Raptor) Auth() *Auth {
 }
 
 //Inventory handles Inventory API
-func (r *Raptor) Inventory() *Auth {
+func (r *Raptor) Inventory() *Inventory {
 	if r.inventory == nil {
 		r.inventory = CreateInventory(r)
 	}

@@ -2,8 +2,20 @@ package models
 
 //Stream a definition of a stream of data
 type Stream struct {
-	Name     string             `json:"name"`
-	Channels map[string]Channel `json:"channels"`
-	DeviceID string             `json:"deviceId"`
-	UserID   string             `json:"userId"`
+	device *Device
+
+	Name     string              `json:"name"`
+	Channels map[string]*Channel `json:"channels"`
+	DeviceID string              `json:"deviceId"`
+	UserID   string              `json:"userId"`
+}
+
+//GetDevice return the device
+func (s *Stream) GetDevice() *Device {
+	return s.device
+}
+
+//SetDevice set the device
+func (s *Stream) SetDevice(dev *Device) {
+	s.device = dev
 }

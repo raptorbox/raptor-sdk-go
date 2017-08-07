@@ -65,6 +65,7 @@ func (d *Device) Merge(raw interface{}) error {
 		}
 		for key, val := range d1.Streams {
 			d.Streams[key] = val
+			val.SetDevice(d)
 		}
 	}
 
@@ -74,6 +75,7 @@ func (d *Device) Merge(raw interface{}) error {
 		}
 		for key, val := range d1.Actions {
 			d.Actions[key] = val
+			val.SetDevice(d)
 		}
 	}
 
