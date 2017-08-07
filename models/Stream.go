@@ -19,3 +19,9 @@ func (s *Stream) GetDevice() *Device {
 func (s *Stream) SetDevice(dev *Device) {
 	s.device = dev
 }
+
+//CreateRecord create a data record for this stream
+func (s *Stream) CreateRecord() *Record {
+	r := NewRecord(s)
+	return r
+}
