@@ -77,7 +77,7 @@ func (s *User) Create(user *models.User) (*models.User, error) {
 
 //Update an user
 func (s *User) Update(user *models.User) (*models.User, error) {
-	raw, err := s.GetClient().Put(fmt.Sprintf(USER_UPDATE, user.ID), user, nil)
+	raw, err := s.GetClient().Put(fmt.Sprintf(USER_UPDATE, user.UUID), user, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -92,6 +92,6 @@ func (s *User) Update(user *models.User) (*models.User, error) {
 
 //Delete an user
 func (s *User) Delete(user *models.User) error {
-	err := s.GetClient().Delete(fmt.Sprintf(USER_DELETE, user.ID), nil)
+	err := s.GetClient().Delete(fmt.Sprintf(USER_DELETE, user.UUID), nil)
 	return err
 }

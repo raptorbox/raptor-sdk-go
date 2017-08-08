@@ -30,6 +30,22 @@ func (a *Auth) GetClient() models.Client {
 	return a.Raptor.GetClient()
 }
 
+//GetUser return the authenticated user
+func (a *Auth) GetUser() *models.User {
+	if a.state == nil {
+		return nil
+	}
+	return a.state.User
+}
+
+//GetToken return the authentication token
+func (a *Auth) GetToken() string {
+	if a.state == nil {
+		return ""
+	}
+	return a.state.Token
+}
+
 //Login login a user with the provided credentials
 func (a *Auth) Login() (*models.LoginState, error) {
 

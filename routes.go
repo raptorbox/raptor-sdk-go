@@ -27,7 +27,8 @@ const (
 	TOKEN_CREATE = "/auth/token"
 	TOKEN_UPDATE = TOKEN_CREATE + "/%s"
 	TOKEN_DELETE = TOKEN_UPDATE
-	TOKEN_GET    = TOKEN_CREATE + "?uuid=%s"
+	TOKEN_GET    = TOKEN_UPDATE
+	TOKEN_LIST   = TOKEN_CREATE + "?uuid=%s"
 
 	ROLE_CREATE = "/auth/role"
 	ROLE_UPDATE = TOKEN_CREATE + "/%s"
