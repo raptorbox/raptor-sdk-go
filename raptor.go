@@ -42,9 +42,9 @@ type Raptor struct {
 	auth      *Auth
 	inventory *Inventory
 	stream    *Stream
-	// tree      *Tree
-	action *Action
-	admin  *Admin
+	tree      *Tree
+	action    *Action
+	admin     *Admin
 }
 
 //GetConfig return the configuration
@@ -90,6 +90,14 @@ func (r *Raptor) Action() *Action {
 		r.action = CreateAction(r)
 	}
 	return r.action
+}
+
+//Tree handles Tree API
+func (r *Raptor) Tree() *Tree {
+	if r.action == nil {
+		r.tree = CreateTree(r)
+	}
+	return r.tree
 }
 
 //SetCredentials set username and password

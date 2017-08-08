@@ -1,7 +1,5 @@
 package raptor
 
-import "github.com/raptorbox/raptor-sdk-go/models"
-
 //CreateAdmin instantiate a new API client
 func CreateAdmin(r *Raptor) *Admin {
 	return &Admin{
@@ -12,5 +10,13 @@ func CreateAdmin(r *Raptor) *Admin {
 //Admin API client
 type Admin struct {
 	Raptor *Raptor
-	state  *models.LoginState
+	user   *User
+}
+
+//User handles Stream API
+func (a *Admin) User() *User {
+	if a.user == nil {
+		a.user = CreateUser(a.Raptor)
+	}
+	return a.user
 }
