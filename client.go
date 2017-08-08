@@ -78,7 +78,12 @@ func (c *DefaultClient) request(opts *models.ClientOptions) *gorequest.SuperAgen
 		r = c.req
 	}
 
-	r.Set("Content-Type", "application/json")
+	if opts.TextPlain {
+		r.Set("Content-Type", "text/plain")
+	} else {
+		r.Set("Content-Type", "application/json")
+	}
+
 	if c.authorizationHeader != "" {
 		r.Set("Authorization", c.authorizationHeader)
 	}

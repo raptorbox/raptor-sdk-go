@@ -15,6 +15,7 @@ type ClientOptions struct {
 	RetryStatusCode int
 	Timeout         time.Duration
 	NewClient       bool
+	TextPlain       bool
 }
 
 //Client restful/pub-sub interface

@@ -16,17 +16,7 @@ func NewRecord(s *Stream) *Record {
 		Channels:  make(map[string]interface{}),
 	}
 
-	if s != nil {
-		r.StreamID = s.Name
-		if s.GetDevice() != nil {
-			d := s.GetDevice()
-			r.UserID = d.UserID
-			r.DeviceID = d.ID
-		} else {
-			r.UserID = s.UserID
-			r.DeviceID = s.DeviceID
-		}
-	}
+	r.SetStream(s)
 
 	return r
 }
@@ -46,6 +36,21 @@ type Record struct {
 //GetStream return the reference stream
 func (r *Record) GetStream() *Stream {
 	return r.stream
+}
+
+//SetStream set the reference stream
+func (r *Record) SetStream(s *Stream) {
+	if s != nil {
+		r.StreamID = s.Name
+		if s.GetDevice() != nil {
+			d := s.GetDevice()
+			r.UserID = d.UserID
+			r.DeviceID = d.ID
+		} else {
+			r.UserID = s.UserID
+			r.DeviceID = s.DeviceID
+		}
+	}
 }
 
 //GetChannel return the reference channel
