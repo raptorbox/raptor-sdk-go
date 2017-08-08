@@ -41,6 +41,10 @@ type Raptor struct {
 
 	auth      *Auth
 	inventory *Inventory
+	stream    *Stream
+	// tree      *Tree
+	action *Action
+	admin  *Admin
 }
 
 //GetConfig return the configuration
@@ -70,6 +74,22 @@ func (r *Raptor) Inventory() *Inventory {
 		r.inventory = CreateInventory(r)
 	}
 	return r.inventory
+}
+
+//Stream handles Stream API
+func (r *Raptor) Stream() *Stream {
+	if r.stream == nil {
+		r.stream = CreateStream(r)
+	}
+	return r.stream
+}
+
+//Action handles Stream API
+func (r *Raptor) Action() *Action {
+	if r.action == nil {
+		r.action = CreateAction(r)
+	}
+	return r.action
 }
 
 //SetCredentials set username and password
