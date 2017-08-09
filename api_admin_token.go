@@ -16,7 +16,16 @@ func CreateToken(r *Raptor) *Token {
 
 //Token API client
 type Token struct {
-	Raptor *Raptor
+	Raptor          *Raptor
+	tokenPermission Permission
+}
+
+//Permission return the Permission API
+func (s *Token) Permission() Permission {
+	if s.tokenPermission == nil {
+		s.tokenPermission = CreateTokenPermission(s.Raptor)
+	}
+	return s.tokenPermission
 }
 
 //GetConfig return the configuration

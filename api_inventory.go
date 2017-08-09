@@ -16,7 +16,16 @@ func CreateInventory(r *Raptor) *Inventory {
 
 //Inventory API client
 type Inventory struct {
-	Raptor *Raptor
+	Raptor           *Raptor
+	devicePermission Permission
+}
+
+//Permission return the Permission API
+func (i *Inventory) Permission() Permission {
+	if i.devicePermission == nil {
+		i.devicePermission = CreateDevicePermission(i.Raptor)
+	}
+	return i.devicePermission
 }
 
 //GetConfig return the configuration

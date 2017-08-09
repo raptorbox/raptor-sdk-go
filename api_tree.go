@@ -15,7 +15,16 @@ func CreateTree(r *Raptor) *Tree {
 
 //Tree API client
 type Tree struct {
-	Raptor *Raptor
+	Raptor         *Raptor
+	treePermission Permission
+}
+
+//Permission return the Permission API
+func (s *Tree) Permission() Permission {
+	if s.treePermission == nil {
+		s.treePermission = CreateTreeNodePermission(s.Raptor)
+	}
+	return s.treePermission
 }
 
 //GetConfig return the configuration

@@ -44,6 +44,7 @@ type Raptor struct {
 	stream    *Stream
 	tree      *Tree
 	action    *Action
+	profile   *Profile
 	admin     *Admin
 }
 
@@ -66,6 +67,14 @@ func (r *Raptor) Auth() *Auth {
 		r.auth = CreateAuth(r)
 	}
 	return r.auth
+}
+
+//Profile handles user storage API
+func (r *Raptor) Profile() *Profile {
+	if r.profile == nil {
+		r.profile = CreateProfile(r)
+	}
+	return r.profile
 }
 
 //Inventory handles Inventory API
