@@ -1,38 +1,13 @@
 package raptor
 
 import (
+	"encoding/json"
 	"errors"
+	"net/url"
 
+	"github.com/prometheus/common/log"
 	"github.com/raptorbox/raptor-sdk-go/models"
 )
-
-//Config a client configuration
-type Config struct {
-	url      string
-	username string
-	password string
-	token    string
-}
-
-//GetUsername return username
-func (c *Config) GetUsername() string {
-	return c.username
-}
-
-//GetPassword return password
-func (c *Config) GetPassword() string {
-	return c.password
-}
-
-//GetToken return token
-func (c *Config) GetToken() string {
-	return c.token
-}
-
-//GetURL return URL
-func (c *Config) GetURL() string {
-	return c.url
-}
 
 //Raptor the SDK API wrapper
 type Raptor struct {
@@ -59,6 +34,14 @@ func (r *Raptor) GetClient() models.Client {
 		r.client = NewDefaultClient(r)
 	}
 	return r.client
+}
+
+//Admin handles authentication API
+func (r *Raptor) Admin() *Admin {
+	if r.admin == nil {
+		r.admin = CreateAdmin(r)
+	}
+	return r.admin
 }
 
 //Auth handles authentication API
@@ -138,6 +121,12 @@ func (r *Raptor) setConfig(config *Config) error {
 		r.config.url = config.GetURL()
 	}
 
+	_, err := url.Parse(r.config.GetURL())
+	if err != nil {
+		log.Debugf("Cannot parse URL `%s`", r.config.GetURL())
+		return err
+	}
+
 	if config.GetToken() != "" {
 		r.config.token = config.GetToken()
 		r.config.username = ""
@@ -159,9 +148,19 @@ func (r *Raptor) setConfig(config *Config) error {
 	return nil
 }
 
-//NewRaptorWithToken create a new Raptor instance using token authentication
-func NewRaptorWithToken(url string, token string) (*Raptor, error) {
-	r, err := NewRaptor(url)
+//NewFromConfig create a new Raptor instance from a provided Config
+func NewFromConfig(config *Config) (*Raptor, error) {
+	r, err := New(config.GetURL())
+	if err != nil {
+		return nil, err
+	}
+	err = r.setConfig(config)
+	return r, err
+}
+
+//NewFromToken create a new Raptor instance using token authentication
+func NewFromToken(url string, token string) (*Raptor, error) {
+	r, err := New(url)
 	if err != nil {
 		return nil, err
 	}
@@ -169,9 +168,9 @@ func NewRaptorWithToken(url string, token string) (*Raptor, error) {
 	return r, err
 }
 
-//NewRaptorWithCredentials create a new Raptor instance using username & password authentication
-func NewRaptorWithCredentials(url string, username string, password string) (*Raptor, error) {
-	r, err := NewRaptor(url)
+//NewFromCredentials create a new Raptor instance using username & password authentication
+func NewFromCredentials(url string, username string, password string) (*Raptor, error) {
+	r, err := New(url)
 	if err != nil {
 		return nil, err
 	}
@@ -179,11 +178,21 @@ func NewRaptorWithCredentials(url string, username string, password string) (*Ra
 	return r, err
 }
 
-//NewRaptor create a new SDK instance
-func NewRaptor(url string) (*Raptor, error) {
+//New create a new SDK instance
+func New(url string) (*Raptor, error) {
 	r := Raptor{}
 	r.setConfig(&Config{
 		url: url,
 	})
 	return &r, nil
+}
+
+//ToJSON convert the model to JSON string
+func ToJSON(i interface{}) ([]byte, error) {
+	return json.Marshal(i)
+}
+
+//FromJSON convert a raw value to a model
+func FromJSON(raw []byte, i interface{}) error {
+	return json.Unmarshal(raw, i)
 }

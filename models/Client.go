@@ -2,12 +2,6 @@ package models
 
 import "time"
 
-// Event interface for event message
-type Event interface {
-	GetName() string
-	GetData() interface{}
-}
-
 //ClientOptions ClientOptions for a client request
 type ClientOptions struct {
 	RetryCount      int
@@ -25,8 +19,8 @@ type Client interface {
 	Post(url string, json interface{}, opts *ClientOptions) ([]byte, error)
 	Put(url string, json interface{}, opts *ClientOptions) ([]byte, error)
 	SetAuthorizationHeader(token string)
-	Subscribe(topic string, cb func(event Event)) error
-	Unsubscribe(topic string, cb func(event Event)) error
+	Subscribe(topic string, cb func(event Payload)) error
+	Unsubscribe(topic string, cb func(event Payload)) error
 	FromJSON(raw []byte, i interface{}) error
 	ToJSON(i interface{}) ([]byte, error)
 }

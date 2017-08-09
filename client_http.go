@@ -1,7 +1,6 @@
 package raptor
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -23,7 +22,8 @@ func DefaultClientOptions() *models.ClientOptions {
 //NewDefaultClient initialize a default client
 func NewDefaultClient(c *Raptor) *DefaultClient {
 	return &DefaultClient{
-		Raptor: c,
+		Raptor:           c,
+		brokerConnection: &BrokerConnection{},
 	}
 }
 
@@ -32,16 +32,17 @@ type DefaultClient struct {
 	Raptor              *Raptor
 	req                 *gorequest.SuperAgent
 	authorizationHeader string
+	brokerConnection    *BrokerConnection
 }
 
 //ToJSON convert the model to JSON string
 func (c *DefaultClient) ToJSON(i interface{}) ([]byte, error) {
-	return json.Marshal(i)
+	return ToJSON(i)
 }
 
 //FromJSON convert a raw value to a model
 func (c *DefaultClient) FromJSON(raw []byte, i interface{}) error {
-	return json.Unmarshal(raw, i)
+	return FromJSON(raw, i)
 }
 
 //GetConfig return the configuration
@@ -133,14 +134,4 @@ func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOp
 func (c *DefaultClient) Put(url string, json interface{}, opts *models.ClientOptions) ([]byte, error) {
 	_, responseBody, errs := c.request(opts).Put(c.url(url)).Send(json).EndBytes()
 	return responseBody, handleErrors(errs)
-}
-
-//Subscribe to topic
-func (c *DefaultClient) Subscribe(topic string, cb func(event models.Event)) error {
-	return nil
-}
-
-//Unsubscribe from topic
-func (c *DefaultClient) Unsubscribe(topic string, cb func(event models.Event)) error {
-	return nil
 }

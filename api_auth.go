@@ -3,6 +3,7 @@ package raptor
 import (
 	"fmt"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/raptorbox/raptor-sdk-go/models"
 )
 
@@ -53,9 +54,24 @@ func (a *Auth) Login() (*models.LoginState, error) {
 	var err error
 
 	if a.GetConfig().GetToken() != "" {
+
+		log.Debug("Attempting token authentication")
+
 		a.GetClient().SetAuthorizationHeader(a.GetConfig().GetToken())
-		raw, err = a.GetClient().Get(USER_GET_ME, nil)
+		user, err := a.Raptor.Admin().User().Me()
+		if err != nil {
+			a.GetClient().SetAuthorizationHeader("")
+			return nil, err
+		}
+
+		a.state = &models.LoginState{
+			Token: a.GetConfig().GetToken(),
+			User:  user,
+		}
+
 	} else {
+
+		log.Debug("Attempting credentials authentication")
 
 		body := fmt.Sprintf(
 			`{ "username": "%s", "password": "%s" }`,
@@ -63,24 +79,30 @@ func (a *Auth) Login() (*models.LoginState, error) {
 			a.GetConfig().GetPassword())
 
 		raw, err = a.GetClient().Post(LOGIN, body, nil)
+
+		state := &models.LoginState{}
+		err = a.GetClient().FromJSON(raw, state)
+
+		if err != nil {
+			log.Debug("Failed to cast response: %s", err.Error())
+			return nil, err
+		}
+
 	}
 
 	if err != nil {
+		log.Debug("Authentication failed: %s", err.Error())
 		return nil, err
 	}
 
-	state := &models.LoginState{}
-	err = a.GetClient().FromJSON(raw, state)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return state, nil
+	log.Debug("Authentication ok, uid %s", a.state.User.UUID)
+	return a.state, nil
 }
 
 //Logout logout an user
 func (a *Auth) Logout() error {
+
+	log.Debug("Logout user")
 
 	_, err := a.GetClient().Post(LOGOUT, nil, nil)
 	if err != nil {
@@ -89,6 +111,7 @@ func (a *Auth) Logout() error {
 
 	a.state = nil
 
+	log.Debug("Logout ok")
 	return nil
 }
 

@@ -60,6 +60,22 @@ func (s *User) Read(id string) (*models.User, error) {
 	return res, nil
 }
 
+//Me Read the user identified by the token
+func (s *User) Me() (*models.User, error) {
+	raw, err := s.GetClient().Get(USER_GET_ME, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &models.User{}
+	err = s.GetClient().FromJSON(raw, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
 //Create an user
 func (s *User) Create(user *models.User) (*models.User, error) {
 	raw, err := s.GetClient().Post(USER_CREATE, user, nil)
