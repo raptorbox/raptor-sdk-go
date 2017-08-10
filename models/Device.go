@@ -8,10 +8,21 @@ type Settings struct {
 	EnableStore  bool `json:"enableStore"`
 }
 
+//NewDevice instantiate a new device
+func NewDevice() *Device {
+	return &Device{
+		Settings: &Settings{
+			EnableEvents: true,
+			EnableStore:  true,
+		},
+		Properties: make(map[string]interface{}),
+		Streams:    make(map[string]Stream),
+		Actions:    make(map[string]Action),
+	}
+}
+
 //Device a definition of a device
 type Device struct {
-	config *Config
-
 	ID          string                 `json:"id"`
 	UserID      string                 `json:"userId"`
 	Name        string                 `json:"name"`

@@ -28,6 +28,20 @@ func (i *Inventory) Permission() Permission {
 	return i.devicePermission
 }
 
+//NewDevice return a new Device instance
+func (i *Inventory) NewDevice() *models.Device {
+
+	userID := ""
+	if i.Raptor.Auth().GetUser() != nil {
+		userID = i.Raptor.Auth().GetUser().UUID
+	}
+
+	dev := models.NewDevice()
+	dev.UserID = userID
+
+	return dev
+}
+
 //GetConfig return the configuration
 func (i *Inventory) GetConfig() models.Config {
 	return i.Raptor.GetConfig()
@@ -39,16 +53,15 @@ func (i *Inventory) GetClient() models.Client {
 }
 
 //List devices accessible by an user
-func (i *Inventory) List() (*[]models.Device, error) {
+func (i *Inventory) List() ([]models.Device, error) {
 
 	raw, err := i.GetClient().Get(INVENTORY_LIST, nil)
-
 	if err != nil {
 		return nil, err
 	}
 
-	res := &[]models.Device{}
-	err = i.GetClient().FromJSON(raw, res)
+	res := make([]models.Device, 0)
+	err = i.GetClient().FromJSON(raw, &res)
 	if err != nil {
 		return nil, err
 	}

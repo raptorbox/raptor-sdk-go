@@ -57,11 +57,9 @@ func (a *Auth) Login() (*models.LoginState, error) {
 
 		log.Debug("Attempting token authentication")
 
-		a.GetClient().SetAuthorizationHeader(a.GetConfig().GetToken())
-		user, err := a.Raptor.Admin().User().Me()
-		if err != nil {
-			a.GetClient().SetAuthorizationHeader("")
-			return nil, err
+		user, err1 := a.Raptor.Admin().User().Me()
+		if err1 != nil {
+			return nil, err1
 		}
 
 		a.state = &models.LoginState{
@@ -78,24 +76,28 @@ func (a *Auth) Login() (*models.LoginState, error) {
 			a.GetConfig().GetUsername(),
 			a.GetConfig().GetPassword())
 
-		raw, err = a.GetClient().Post(LOGIN, body, nil)
+		raw, err = a.GetClient().Post(LOGIN, body, &models.ClientOptions{
+			SkipAuthHeader: true,
+		})
 
 		state := &models.LoginState{}
 		err = a.GetClient().FromJSON(raw, state)
 
 		if err != nil {
-			log.Debug("Failed to cast response: %s", err.Error())
+			log.Debugf("Failed to cast response: %s", err.Error())
 			return nil, err
 		}
+
+		a.state = state
 
 	}
 
 	if err != nil {
-		log.Debug("Authentication failed: %s", err.Error())
+		log.Debugf("Authentication failed: %s", err.Error())
 		return nil, err
 	}
 
-	log.Debug("Authentication ok, uid %s", a.state.User.UUID)
+	log.Debugf("Authentication ok, uid %s", a.state.User.UUID)
 	return a.state, nil
 }
 
@@ -104,7 +106,7 @@ func (a *Auth) Logout() error {
 
 	log.Debug("Logout user")
 
-	_, err := a.GetClient().Post(LOGOUT, nil, nil)
+	err := a.GetClient().Delete(LOGOUT, nil)
 	if err != nil {
 		return err
 	}

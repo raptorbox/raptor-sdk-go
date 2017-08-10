@@ -1,9 +1,11 @@
 package raptor
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/parnurzeal/gorequest"
 	"github.com/raptorbox/raptor-sdk-go/models"
 )
@@ -11,7 +13,6 @@ import (
 // DefaultClientOptions create default client options
 func DefaultClientOptions() *models.ClientOptions {
 	return &models.ClientOptions{
-		NewClient:       false,
 		RetryCount:      3,
 		RetryStatusCode: 400,
 		RetryTime:       200,
@@ -29,10 +30,8 @@ func NewDefaultClient(c *Raptor) *DefaultClient {
 
 //DefaultClient IClient default implementation
 type DefaultClient struct {
-	Raptor              *Raptor
-	req                 *gorequest.SuperAgent
-	authorizationHeader string
-	brokerConnection    *BrokerConnection
+	Raptor           *Raptor
+	brokerConnection *BrokerConnection
 }
 
 //ToJSON convert the model to JSON string
@@ -55,29 +54,19 @@ func (c *DefaultClient) GetClient() models.Client {
 	return c
 }
 
-//SetAuthorizationHeader sign the request with provided token
-func (c *DefaultClient) SetAuthorizationHeader(token string) {
-	c.authorizationHeader = token
-}
-
 //request
-func (c *DefaultClient) request(opts *models.ClientOptions) *gorequest.SuperAgent {
+func (c *DefaultClient) prepareRequest(method string, url string, opts *models.ClientOptions) *gorequest.SuperAgent {
 
 	if opts == nil {
 		opts = DefaultClientOptions()
 	}
 
-	var r *gorequest.SuperAgent
-	if opts.NewClient {
-		r = gorequest.New()
-	} else {
+	r := gorequest.New()
 
-		if c.req == nil {
-			c.req = gorequest.New()
-		}
+	r.Method = method
+	r.Url = c.url(url)
 
-		r = c.req
-	}
+	log.Debugf("Performing request %s %s", r.Method, r.Url)
 
 	if opts.TextPlain {
 		r.Set("Content-Type", "text/plain")
@@ -85,8 +74,23 @@ func (c *DefaultClient) request(opts *models.ClientOptions) *gorequest.SuperAgen
 		r.Set("Content-Type", "application/json")
 	}
 
-	if c.authorizationHeader != "" {
-		r.Set("Authorization", c.authorizationHeader)
+	if _, ok := r.Header["Authorization"]; ok {
+		delete(r.Header, "Authorization")
+	}
+	if !opts.SkipAuthHeader {
+
+		authorizationToken := ""
+		if c.GetConfig().GetToken() != "" {
+			authorizationToken = c.GetConfig().GetToken()
+		}
+		if c.Raptor.Auth().GetToken() != "" {
+			authorizationToken = c.Raptor.Auth().GetToken()
+		}
+
+		if authorizationToken != "" {
+			log.Debugf("Using token %s", authorizationToken)
+			r.Set("Authorization", authorizationToken)
+		}
 	}
 
 	if opts.Timeout > 0 {
@@ -101,37 +105,64 @@ func (c *DefaultClient) request(opts *models.ClientOptions) *gorequest.SuperAgen
 }
 
 func handleErrors(errs []error) error {
-	if len(errs) > 0 {
-		return errs[0]
+
+	if len(errs) == 0 {
+		return nil
 	}
-	return nil
+
+	log.Error("Request errors")
+	for _, err := range errs {
+		log.Warnf("- %s", err.Error())
+	}
+
+	return errs[0]
+}
+
+func (c *DefaultClient) afterRequest(opts *models.ClientOptions, response gorequest.Response, body []byte, errs []error) ([]byte, error) {
+
+	log.Debugf("Response %d", response.StatusCode)
+	log.Debug(string(body))
+
+	err := handleErrors(errs)
+	if err != nil {
+		return nil, err
+	}
+
+	if response.StatusCode >= 400 {
+		err = errors.New("Request failed with " + response.Status)
+	}
+
+	return body, err
 }
 
 //url generate an url from basepath
 func (c *DefaultClient) url(url string) string {
-	return fmt.Sprintf("%s/%s", c.GetConfig().GetURL(), url)
+	return fmt.Sprintf("%s%s", c.GetConfig().GetURL(), url)
 }
 
 //Get request
 func (c *DefaultClient) Get(url string, opts *models.ClientOptions) ([]byte, error) {
-	_, responseBody, errs := c.request(opts).Get(c.url(url)).EndBytes()
-	return responseBody, handleErrors(errs)
+	response, body, errs := c.prepareRequest(gorequest.GET, url, opts).EndBytes()
+	return c.afterRequest(opts, response, body, errs)
 }
 
 //Delete request
 func (c *DefaultClient) Delete(url string, opts *models.ClientOptions) error {
-	_, _, errs := c.request(opts).Delete(c.url(url)).EndBytes()
-	return handleErrors(errs)
+	response, body, errs := c.prepareRequest(gorequest.DELETE, url, opts).EndBytes()
+	_, err := c.afterRequest(opts, response, body, errs)
+	return err
 }
 
 //Post request
 func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOptions) ([]byte, error) {
-	_, responseBody, errs := c.request(opts).Post(c.url(url)).Send(json).EndBytes()
-	return responseBody, handleErrors(errs)
+	response, body, errs := c.prepareRequest(gorequest.POST, url, opts).Send(json).EndBytes()
+	res, err := c.afterRequest(opts, response, body, errs)
+	return res, err
 }
 
 //Put request
 func (c *DefaultClient) Put(url string, json interface{}, opts *models.ClientOptions) ([]byte, error) {
-	_, responseBody, errs := c.request(opts).Put(c.url(url)).Send(json).EndBytes()
-	return responseBody, handleErrors(errs)
+	response, body, errs := c.prepareRequest(gorequest.PUT, url, opts).Send(json).EndBytes()
+	res, err := c.afterRequest(opts, response, body, errs)
+	return res, err
 }

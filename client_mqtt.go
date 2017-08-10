@@ -92,7 +92,7 @@ func (c *DefaultClient) Subscribe(topic string, cb func(event models.Payload)) e
 			return
 		}
 
-		log.Error("Error handling message for `%s`: ", parts[0], string(msg.Payload()))
+		log.Errorf("Error handling message for `%s`: %s", parts[0], string(msg.Payload()))
 
 	}); token.Wait() && token.Error() != nil {
 		return token.Error()
