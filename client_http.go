@@ -8,7 +8,10 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/parnurzeal/gorequest"
 	"github.com/raptorbox/raptor-sdk-go/models"
+	debug "github.com/tj/go-debug"
 )
+
+var d = debug.Debug("raptor:client:http")
 
 // DefaultClientOptions create default client options
 func DefaultClientOptions() *models.ClientOptions {
@@ -121,7 +124,7 @@ func handleErrors(errs []error) error {
 func (c *DefaultClient) afterRequest(opts *models.ClientOptions, response gorequest.Response, body []byte, errs []error) ([]byte, error) {
 
 	log.Debugf("Response %d", response.StatusCode)
-	log.Debug(string(body))
+	d(string(body))
 
 	err := handleErrors(errs)
 	if err != nil {
@@ -158,13 +161,13 @@ func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOp
 	if log.GetLevel() == log.DebugLevel {
 		b, err := c.ToJSON(json)
 		if err == nil {
-			log.Debugf("Data: %v", string(b))
+			d("Data: %v", string(b))
 		} else {
-			log.Debugf("Data: [ERR: %s]", err.Error())
+			d("Data: [ERR: %s]", err.Error())
 		}
 	}
 	response, body, errs := c.prepareRequest(gorequest.POST, url, opts).Send(json).EndBytes()
-	log.Debugf("Data: %v", json)
+	d("Data: %v", json)
 	res, err := c.afterRequest(opts, response, body, errs)
 	return res, err
 }
@@ -174,9 +177,9 @@ func (c *DefaultClient) Put(url string, json interface{}, opts *models.ClientOpt
 	if log.GetLevel() == log.DebugLevel {
 		b, err := c.ToJSON(json)
 		if err == nil {
-			log.Debugf("Data: %v", string(b))
+			d("Data: %v", string(b))
 		} else {
-			log.Debugf("Data: [ERR: %s]", err.Error())
+			d("Data: [ERR: %s]", err.Error())
 		}
 	}
 	response, body, errs := c.prepareRequest(gorequest.PUT, url, opts).Send(json).EndBytes()

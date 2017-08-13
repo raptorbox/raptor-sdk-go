@@ -47,7 +47,7 @@ type Permission interface {
 	GetConfig() models.Config
 	GetClient() models.Client
 	Get(subjectID int) ([]string, error)
-	Set(subjectID int, permissions []string) ([]string, error)
+	Set(subjectID int, userID string, permissions []string) ([]string, error)
 }
 
 //GenericPermission API client abstract per subject ACL permission management
@@ -75,7 +75,7 @@ func (s *GenericPermission) Get(subjectID int) ([]string, error) {
 	}
 
 	res := make([]string, 0)
-	err = s.GetClient().FromJSON(raw, res)
+	err = s.GetClient().FromJSON(raw, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -84,15 +84,19 @@ func (s *GenericPermission) Get(subjectID int) ([]string, error) {
 }
 
 //Set the token permissions
-func (s *GenericPermission) Set(subjectID int, permissions []string) ([]string, error) {
+func (s *GenericPermission) Set(subjectID int, userID string, permissions []string) ([]string, error) {
 
-	raw, err := s.GetClient().Put(fmt.Sprintf(PERMISSION_SET, s.subjectType, strconv.Itoa(subjectID)), permissions, nil)
+	body := make(map[string]interface{})
+	body["user"] = userID
+	body["permissions"] = permissions
+
+	raw, err := s.GetClient().Put(fmt.Sprintf(PERMISSION_SET, s.subjectType, strconv.Itoa(subjectID)), body, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	res := make([]string, 0)
-	err = s.GetClient().FromJSON(raw, res)
+	err = s.GetClient().FromJSON(raw, &res)
 	if err != nil {
 		return nil, err
 	}

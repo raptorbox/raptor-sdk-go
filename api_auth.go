@@ -80,6 +80,11 @@ func (a *Auth) Login() (*models.LoginState, error) {
 			SkipAuthHeader: true,
 		})
 
+		if err != nil {
+			log.Debugf("Failed to login: %s", err.Error())
+			return nil, err
+		}
+
 		state := &models.LoginState{}
 		err = a.GetClient().FromJSON(raw, state)
 

@@ -59,7 +59,7 @@ func (s *Token) ListByUUID(uuid string) ([]models.Token, error) {
 	}
 
 	res := make([]models.Token, 0)
-	err = s.GetClient().FromJSON(raw, res)
+	err = s.GetClient().FromJSON(raw, &res)
 	if err != nil {
 		return nil, err
 	}

@@ -2,7 +2,9 @@ package models
 
 //NewUser create a new User instance
 func NewUser() *User {
-	return new(User)
+	u := new(User)
+	u.Enabled = true
+	return u
 }
 
 //User a user account

@@ -36,7 +36,7 @@ func (s *User) List() ([]models.User, error) {
 	}
 
 	res := make([]models.User, 0)
-	err = s.GetClient().FromJSON(raw, res)
+	err = s.GetClient().FromJSON(raw, &res)
 	if err != nil {
 		return nil, err
 	}
