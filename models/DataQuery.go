@@ -63,11 +63,11 @@ func (q *NumberQuery) GetQuery() interface{} {
 
 //TextQuery format a query for text search in a field
 type TextQuery struct {
-	StartWith string   `json:"startWith"`
-	EndWith   string   `json:"endWith"`
-	Contains  string   `json:"contains"`
-	Equals    string   `json:"equals"`
-	In        []string `json:"in"`
+	StartWith string   `json:"startWith,omitempty"`
+	EndWith   string   `json:"endWith,omitempty"`
+	Contains  string   `json:"contains,omitempty"`
+	Equals    string   `json:"equals,omitempty"`
+	In        []string `json:"in,omitempty"`
 }
 
 //GetQuery return the query
@@ -77,9 +77,9 @@ func (q *TextQuery) GetQuery() interface{} {
 
 //MapQuery format a query for map search in a field
 type MapQuery struct {
-	ContainsKey   string                 `json:"containsKey"`
-	ContainsValue interface{}            `json:"containsValue"`
-	Has           map[string]interface{} `json:"has"`
+	ContainsKey   string                 `json:"containsKey,omitempty"`
+	ContainsValue interface{}            `json:"containsValue,omitempty"`
+	Has           map[string]interface{} `json:"has,omitempty"`
 }
 
 //GetQuery return the query
@@ -89,13 +89,33 @@ func (q *MapQuery) GetQuery() interface{} {
 
 //DataQuery format a query for device search
 type DataQuery struct {
-	Timestamp NumberQuery       `json:"timestamp"`
-	Channels  map[string]IQuery `json:"channels"`
-	Location  GeoQuery          `json:"location"`
-	StreamID  string            `json:"streamId"`
+	Timestamp *NumberQuery      `json:"timestamp,omitempty"`
+	Channels  map[string]IQuery `json:"channels,omitempty"`
+	Location  *GeoQuery         `json:"location,omitempty"`
+	StreamID  string            `json:"streamId,omitempty"`
 }
 
 //NewDataQuery instantiate a device query
 func NewDataQuery() *DataQuery {
-	return &DataQuery{}
+	return &DataQuery{
+		Timestamp: &NumberQuery{
+			Between: make([]float64, 0),
+		},
+		Channels: make(map[string]IQuery),
+		Location: &GeoQuery{},
+	}
+}
+
+// NewTextQuery create a new TextQuery
+func NewTextQuery() *TextQuery {
+	return &TextQuery{
+		In: make([]string, 0),
+	}
+}
+
+// NewMapQuery create a new MapQuery
+func NewMapQuery() *MapQuery {
+	return &MapQuery{
+		Has: make(map[string]interface{}),
+	}
 }

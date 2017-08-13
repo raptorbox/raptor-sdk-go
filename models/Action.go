@@ -3,11 +3,11 @@ package models
 //Action a definition of a triggerable action
 type Action struct {
 	device   *Device
-	Name     string `json:"name"`
-	Type     string `json:"type"`
-	Unit     string `json:"unit"`
-	DeviceID string `json:"deviceId"`
-	UserID   string `json:"userId"`
+	Name     string `json:"name,omitempty"`
+	Type     string `json:"type,omitempty"`
+	Unit     string `json:"unit,omitempty"`
+	DeviceID string `json:"deviceId,omitempty"`
+	UserID   string `json:"userId,omitempty"`
 }
 
 //CreateStatus create a wrapper to be sent as status definition

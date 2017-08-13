@@ -44,7 +44,7 @@ func (i *Inventory) NewDevice() *models.Device {
 
 //NewDeviceFromFile load a Device definition from a file
 func (i *Inventory) NewDeviceFromFile(src string) (*models.Device, error) {
-	dev := &models.Device{}
+	dev := models.NewDevice()
 	err := i.Raptor.LoadModelFromFile(src, dev)
 	return dev, err
 }
@@ -93,13 +93,13 @@ func (i *Inventory) Search(q *models.DeviceQuery) ([]models.Device, error) {
 		return nil, err
 	}
 
-	res := &[]models.Device{}
-	err = i.GetClient().FromJSON(raw, res)
+	res := make([]models.Device, 0)
+	err = i.GetClient().FromJSON(raw, &res)
 	if err != nil {
 		return nil, err
 	}
 
-	return *res, nil
+	return res, nil
 }
 
 //Create a device

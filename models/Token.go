@@ -2,7 +2,9 @@ package models
 
 //NewToken create a new Token instance
 func NewToken() *Token {
-	return &Token{}
+	t := &Token{}
+	t.Enabled = true
+	return t
 }
 
 //Token a token identifier

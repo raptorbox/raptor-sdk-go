@@ -4,10 +4,10 @@ package models
 type Stream struct {
 	device *Device
 
-	Name     string              `json:"name"`
-	Channels map[string]*Channel `json:"channels"`
-	DeviceID string              `json:"deviceId"`
-	UserID   string              `json:"userId"`
+	Name     string              `json:"name,omitempty"`
+	Channels map[string]*Channel `json:"channels,omitempty"`
+	DeviceID string              `json:"deviceId,omitempty"`
+	UserID   string              `json:"userId,omitempty"`
 }
 
 //GetDevice return the device

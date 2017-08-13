@@ -16,26 +16,34 @@ func NewDevice() *Device {
 			EnableStore:  true,
 		},
 		Properties: make(map[string]interface{}),
-		Streams:    make(map[string]Stream),
-		Actions:    make(map[string]Action),
+		Streams:    make(map[string]*Stream),
+		Actions:    make(map[string]*Action),
 	}
 }
 
 //Device a definition of a device
 type Device struct {
-	ID          string                 `json:"id"`
-	UserID      string                 `json:"userId"`
-	Name        string                 `json:"name"`
-	Description string                 `json:"description"`
-	Settings    *Settings              `json:"settings"`
-	Properties  map[string]interface{} `json:"properties"`
-	Streams     map[string]Stream      `json:"streams"`
-	Actions     map[string]Action      `json:"actions"`
+	ID          string                 `json:"id,omitempty"`
+	UserID      string                 `json:"userId,omitempty"`
+	Name        string                 `json:"name,omitempty"`
+	Description string                 `json:"description,omitempty"`
+	Settings    *Settings              `json:"settings,omitempty"`
+	Properties  map[string]interface{} `json:"properties,omitempty"`
+	Streams     map[string]*Stream     `json:"streams,omitempty"`
+	Actions     map[string]*Action     `json:"actions,omitempty"`
 }
 
 //GetID return the Device ID
 func (d *Device) GetID() string {
 	return d.ID
+}
+
+//GetStream return a Stream by name
+func (d *Device) GetStream(name string) *Stream {
+	if v, ok := d.Streams[name]; ok {
+		return v
+	}
+	return nil
 }
 
 //Merge two device definitions, implements Mergeable
@@ -72,7 +80,7 @@ func (d *Device) Merge(raw interface{}) error {
 
 	if len(d1.Streams) > 0 {
 		if d.Streams == nil {
-			d.Streams = make(map[string]Stream)
+			d.Streams = make(map[string]*Stream)
 		}
 		for key, val := range d1.Streams {
 			d.Streams[key] = val
@@ -82,7 +90,7 @@ func (d *Device) Merge(raw interface{}) error {
 
 	if len(d1.Actions) > 0 {
 		if d.Actions == nil {
-			d.Actions = make(map[string]Action)
+			d.Actions = make(map[string]*Action)
 		}
 		for key, val := range d1.Actions {
 			d.Actions[key] = val

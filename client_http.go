@@ -80,6 +80,7 @@ func (c *DefaultClient) prepareRequest(method string, url string, opts *models.C
 	if _, ok := r.Header["Authorization"]; ok {
 		delete(r.Header, "Authorization")
 	}
+
 	if !opts.SkipAuthHeader {
 
 		authorizationToken := ""
@@ -123,7 +124,7 @@ func handleErrors(errs []error) error {
 
 func (c *DefaultClient) afterRequest(opts *models.ClientOptions, response gorequest.Response, body []byte, errs []error) ([]byte, error) {
 
-	log.Debugf("Response %d", response.StatusCode)
+	d("Response %d", response.StatusCode)
 	d(string(body))
 
 	err := handleErrors(errs)
