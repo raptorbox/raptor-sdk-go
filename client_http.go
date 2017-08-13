@@ -155,13 +155,30 @@ func (c *DefaultClient) Delete(url string, opts *models.ClientOptions) error {
 
 //Post request
 func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOptions) ([]byte, error) {
+	if log.GetLevel() == log.DebugLevel {
+		b, err := c.ToJSON(json)
+		if err == nil {
+			log.Debugf("Data: %v", string(b))
+		} else {
+			log.Debugf("Data: [ERR: %s]", err.Error())
+		}
+	}
 	response, body, errs := c.prepareRequest(gorequest.POST, url, opts).Send(json).EndBytes()
+	log.Debugf("Data: %v", json)
 	res, err := c.afterRequest(opts, response, body, errs)
 	return res, err
 }
 
 //Put request
 func (c *DefaultClient) Put(url string, json interface{}, opts *models.ClientOptions) ([]byte, error) {
+	if log.GetLevel() == log.DebugLevel {
+		b, err := c.ToJSON(json)
+		if err == nil {
+			log.Debugf("Data: %v", string(b))
+		} else {
+			log.Debugf("Data: [ERR: %s]", err.Error())
+		}
+	}
 	response, body, errs := c.prepareRequest(gorequest.PUT, url, opts).Send(json).EndBytes()
 	res, err := c.afterRequest(opts, response, body, errs)
 	return res, err

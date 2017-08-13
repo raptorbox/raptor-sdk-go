@@ -2,7 +2,10 @@ package raptor
 
 import (
 	"errors"
+	"io/ioutil"
 	"net/url"
+	"os"
+	"strings"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/raptorbox/raptor-sdk-go/models"
@@ -93,6 +96,12 @@ func (r *Raptor) Tree() *Tree {
 
 //SetCredentials set username and password
 func (r *Raptor) SetCredentials(username string, password string) error {
+	if username == "" {
+		return errors.New("Username is empty")
+	}
+	if password == "" {
+		return errors.New("Password is empty")
+	}
 	return r.SetConfig(&Config{
 		Username: username,
 		Password: password,
@@ -101,6 +110,9 @@ func (r *Raptor) SetCredentials(username string, password string) error {
 
 //SetToken set token
 func (r *Raptor) SetToken(token string) error {
+	if token == "" {
+		return errors.New("Token is empty")
+	}
 	return r.SetConfig(&Config{
 		Token: token,
 	})
@@ -151,4 +163,41 @@ func (r *Raptor) SetConfig(config *Config) error {
 	}
 
 	return nil
+}
+
+//LoadModelFromFile load a model from a JSON file
+func (r *Raptor) LoadModelFromFile(src string, m interface{}) error {
+	return LoadModelFromFile(src, m)
+}
+
+//LoadModelFromString load a config from a JSON string
+func (r *Raptor) LoadModelFromString(src string, m interface{}) error {
+	return LoadModelFromString(src, m)
+}
+
+//LoadModelFromFile load a model from a JSON file
+func LoadModelFromFile(src string, m interface{}) error {
+
+	if _, err := os.Stat(src); os.IsNotExist(err) {
+		return err
+	}
+
+	c := &m
+	b, err := ioutil.ReadFile(src)
+	if err != nil {
+		return err
+	}
+
+	return FromJSON(b, c)
+}
+
+//LoadModelFromString load a config from a JSON string
+func LoadModelFromString(json string, m interface{}) error {
+	c := &Config{}
+	r := strings.NewReader(json)
+	b, err := ioutil.ReadAll(r)
+	if err != nil {
+		return err
+	}
+	return FromJSON(b, c)
 }

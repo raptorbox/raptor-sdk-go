@@ -42,6 +42,18 @@ func (i *Inventory) NewDevice() *models.Device {
 	return dev
 }
 
+//NewDeviceFromFile load a Device definition from a file
+func (i *Inventory) NewDeviceFromFile(src string) (*models.Device, error) {
+	dev := &models.Device{}
+	err := i.Raptor.LoadModelFromFile(src, dev)
+	return dev, err
+}
+
+//NewDeviceQuery return a new DeviceQuery instance
+func (i *Inventory) NewDeviceQuery() *models.DeviceQuery {
+	return models.NewDeviceQuery()
+}
+
 //GetConfig return the configuration
 func (i *Inventory) GetConfig() models.Config {
 	return i.Raptor.GetConfig()
@@ -70,7 +82,7 @@ func (i *Inventory) List() ([]models.Device, error) {
 }
 
 //Search for devices
-func (i *Inventory) Search(q *models.DeviceQuery) (*[]models.Device, error) {
+func (i *Inventory) Search(q *models.DeviceQuery) ([]models.Device, error) {
 
 	if q == nil {
 		return nil, errors.New("Query is missing")
@@ -87,7 +99,7 @@ func (i *Inventory) Search(q *models.DeviceQuery) (*[]models.Device, error) {
 		return nil, err
 	}
 
-	return res, nil
+	return *res, nil
 }
 
 //Create a device
