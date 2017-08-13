@@ -3,6 +3,7 @@ package raptor
 import (
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/raptorbox/raptor-sdk-go/models"
 )
@@ -67,8 +68,8 @@ func (s *Token) ListByUUID(uuid string) ([]models.Token, error) {
 }
 
 //Read a token
-func (s *Token) Read(id string) (*models.Token, error) {
-	raw, err := s.GetClient().Get(fmt.Sprintf(TOKEN_GET, id), nil)
+func (s *Token) Read(id int) (*models.Token, error) {
+	raw, err := s.GetClient().Get(fmt.Sprintf(TOKEN_GET, strconv.Itoa(id)), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -83,37 +84,37 @@ func (s *Token) Read(id string) (*models.Token, error) {
 }
 
 //Create a token
-func (s *Token) Create(token *models.Token) (*models.Token, error) {
+func (s *Token) Create(token *models.Token) error {
 	raw, err := s.GetClient().Post(TOKEN_CREATE, token, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = s.GetClient().FromJSON(raw, token)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return token, nil
+	return nil
 }
 
 //Update a token
-func (s *Token) Update(token *models.Token) (*models.Token, error) {
-	raw, err := s.GetClient().Put(fmt.Sprintf(TOKEN_UPDATE, token.ID), token, nil)
+func (s *Token) Update(token *models.Token) error {
+	raw, err := s.GetClient().Put(fmt.Sprintf(TOKEN_UPDATE, strconv.Itoa(token.ID)), token, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = s.GetClient().FromJSON(raw, token)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return token, nil
+	return nil
 }
 
 //Delete an user
 func (s *Token) Delete(token *models.Token) error {
-	err := s.GetClient().Delete(fmt.Sprintf(TOKEN_DELETE, token.ID), nil)
+	err := s.GetClient().Delete(fmt.Sprintf(TOKEN_DELETE, strconv.Itoa(token.ID)), nil)
 	return err
 }

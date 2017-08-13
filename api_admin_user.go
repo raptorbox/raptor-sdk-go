@@ -77,33 +77,35 @@ func (s *User) Me() (*models.User, error) {
 }
 
 //Create an user
-func (s *User) Create(user *models.User) (*models.User, error) {
+func (s *User) Create(user *models.User) error {
+
 	raw, err := s.GetClient().Post(USER_CREATE, user, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = s.GetClient().FromJSON(raw, user)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return user, nil
+	return nil
 }
 
 //Update an user
-func (s *User) Update(user *models.User) (*models.User, error) {
+func (s *User) Update(user *models.User) error {
+
 	raw, err := s.GetClient().Put(fmt.Sprintf(USER_UPDATE, user.UUID), user, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = s.GetClient().FromJSON(raw, user)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return user, nil
+	return nil
 }
 
 //Delete an user
