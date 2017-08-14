@@ -92,7 +92,7 @@ func (c *DefaultClient) prepareRequest(method string, url string, opts *models.C
 		}
 
 		if authorizationToken != "" {
-			log.Debugf("Using token %s", authorizationToken)
+			d("Using token %s", authorizationToken)
 			r.Set("Authorization", authorizationToken)
 		}
 	}
