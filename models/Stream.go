@@ -12,10 +12,12 @@ func NewStream(d *Device) *Stream {
 type Stream struct {
 	device *Device
 
-	Name     string              `json:"name,omitempty"`
-	Channels map[string]*Channel `json:"channels,omitempty"`
-	DeviceID string              `json:"deviceId,omitempty"`
-	UserID   string              `json:"userId,omitempty"`
+	Name        string              `json:"name,omitempty"`
+	Type        string              `json:"type,omitempty"`
+	Description string              `json:"description,omitempty"`
+	Channels    map[string]*Channel `json:"channels,omitempty"`
+	DeviceID    string              `json:"deviceId,omitempty"`
+	UserID      string              `json:"userId,omitempty"`
 }
 
 //GetChannel return the device
