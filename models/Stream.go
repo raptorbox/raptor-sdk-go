@@ -34,6 +34,8 @@ func (s *Stream) GetDevice() *Device {
 //SetDevice set the device
 func (s *Stream) SetDevice(dev *Device) {
 	s.device = dev
+	s.DeviceID = dev.ID
+	s.UserID = dev.UserID
 }
 
 //CreateRecord create a data record for this stream

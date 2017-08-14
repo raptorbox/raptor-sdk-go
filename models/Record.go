@@ -10,14 +10,11 @@ type GeoPoint struct {
 
 //NewRecord create a new record
 func NewRecord(s *Stream) *Record {
-
 	r := &Record{
 		Timestamp: time.Now().Unix(),
 		Channels:  make(map[string]interface{}),
 	}
-
 	r.SetStream(s)
-
 	return r
 }
 
@@ -41,6 +38,7 @@ func (r *Record) GetStream() *Stream {
 //SetStream set the reference stream
 func (r *Record) SetStream(s *Stream) {
 	if s != nil {
+		r.stream = s
 		r.StreamID = s.Name
 		if s.GetDevice() != nil {
 			d := s.GetDevice()

@@ -46,6 +46,7 @@ func (i *Inventory) NewDevice() *models.Device {
 func (i *Inventory) NewDeviceFromFile(src string) (*models.Device, error) {
 	dev := models.NewDevice()
 	err := i.Raptor.LoadModelFromFile(src, dev)
+	dev.EnsureReferences()
 	return dev, err
 }
 
@@ -78,6 +79,10 @@ func (i *Inventory) List() ([]models.Device, error) {
 		return nil, err
 	}
 
+	for i := 0; i < len(res); i++ {
+		res[i].EnsureReferences()
+	}
+
 	return res, nil
 }
 
@@ -99,6 +104,10 @@ func (i *Inventory) Search(q *models.DeviceQuery) ([]models.Device, error) {
 		return nil, err
 	}
 
+	for i := 0; i < len(res); i++ {
+		res[i].EnsureReferences()
+	}
+
 	return res, nil
 }
 
@@ -118,6 +127,7 @@ func (i *Inventory) Create(dev *models.Device) error {
 	}
 
 	dev.Merge(res)
+	dev.EnsureReferences()
 
 	return nil
 }
@@ -142,6 +152,7 @@ func (i *Inventory) Update(dev *models.Device) error {
 	}
 
 	dev.Merge(res)
+	dev.EnsureReferences()
 
 	return nil
 }

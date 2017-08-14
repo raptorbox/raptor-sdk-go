@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/raptorbox/raptor-sdk-go/models"
 )
 
@@ -94,6 +95,7 @@ func (s *Stream) Search(stream *models.Stream, q *models.DataQuery) ([]models.Re
 //Push data to the backend
 func (s *Stream) Push(r *models.Record) error {
 
+	log.Debugf("%v", r.GetStream().Name)
 	stream := r.GetStream()
 	if stream == nil {
 		return errors.New("record stream is required, use Stream.CreateRecord")

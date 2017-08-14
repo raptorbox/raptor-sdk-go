@@ -33,6 +33,22 @@ type Device struct {
 	Actions     map[string]*Action     `json:"actions,omitempty"`
 }
 
+//EnsureReferences ensure structs proeperly point to parent structs
+func (d *Device) EnsureReferences() {
+
+	// apply internal references
+	for _, s := range d.Streams {
+		s.SetDevice(d)
+		for _, c := range s.Channels {
+			c.SetStream(s)
+		}
+	}
+	for _, a := range d.Actions {
+		a.SetDevice(d)
+	}
+
+}
+
 //GetID return the Device ID
 func (d *Device) GetID() string {
 	return d.ID
