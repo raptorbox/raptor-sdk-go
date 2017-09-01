@@ -14,6 +14,7 @@ type Stream struct {
 
 	Name        string              `json:"name,omitempty"`
 	Type        string              `json:"type,omitempty"`
+	Dynamic     bool                `json:"dynamic,omitempty"`
 	Description string              `json:"description,omitempty"`
 	Channels    map[string]*Channel `json:"channels,omitempty"`
 	DeviceID    string              `json:"deviceId,omitempty"`
