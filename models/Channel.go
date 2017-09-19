@@ -1,5 +1,12 @@
 package models
 
+//NewChannel initialize a new Channel
+func NewChannel(s *Stream) *Channel {
+	return &Channel{
+		stream: s,
+	}
+}
+
 //Channel a definition of a channel in a stream of data
 type Channel struct {
 	stream *Stream
