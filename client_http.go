@@ -138,7 +138,7 @@ func (c *DefaultClient) afterRequest(opts *models.ClientOptions, response gorequ
 	}
 
 	if response.StatusCode >= 400 {
-		err = errors.New("Request failed with " + response.Status)
+		err = fmt.Errorf("Request failed with %s: %s", response.Status, string(body))
 	}
 
 	return body, err
