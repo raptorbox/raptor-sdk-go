@@ -47,11 +47,11 @@ func (s *Token) List() ([]models.Token, error) {
 		return nil, errors.New("Missing user")
 	}
 
-	return s.ListByUUID(user.UUID)
+	return s.ListByID(user.ID)
 }
 
-//ListByUUID the available token for a user
-func (s *Token) ListByUUID(uuid string) ([]models.Token, error) {
+//ListByID the available token for a user
+func (s *Token) ListByID(uuid string) ([]models.Token, error) {
 
 	raw, err := s.GetClient().Get(fmt.Sprintf(TOKEN_LIST, uuid), nil)
 	if err != nil {

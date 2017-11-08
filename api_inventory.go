@@ -33,7 +33,7 @@ func (i *Inventory) NewDevice() *models.Device {
 
 	userID := ""
 	if i.Raptor.Auth().GetUser() != nil {
-		userID = i.Raptor.Auth().GetUser().UUID
+		userID = i.Raptor.Auth().GetUser().ID
 	}
 
 	dev := models.NewDevice()

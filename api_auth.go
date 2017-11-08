@@ -102,7 +102,7 @@ func (a *Auth) Login() (*models.LoginState, error) {
 		return nil, err
 	}
 
-	log.Debugf("Authentication ok, uid %s", a.state.User.UUID)
+	log.Debugf("Authentication ok, uid %s", a.state.User.ID)
 	return a.state, nil
 }
 

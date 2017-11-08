@@ -37,7 +37,7 @@ func (s *Profile) Get(key string) ([]byte, error) {
 		return nil, errors.New("Missing user")
 	}
 
-	raw, err := s.GetClient().Get(fmt.Sprintf(PROFILE_GET, user.UUID, key), nil)
+	raw, err := s.GetClient().Get(fmt.Sprintf(PROFILE_GET, user.ID, key), nil)
 	return raw, err
 }
 
@@ -49,7 +49,7 @@ func (s *Profile) GetAll() ([]byte, error) {
 		return nil, errors.New("Missing user")
 	}
 
-	raw, err := s.GetClient().Get(fmt.Sprintf(PROFILE_GET_ALL, user.UUID), nil)
+	raw, err := s.GetClient().Get(fmt.Sprintf(PROFILE_GET_ALL, user.ID), nil)
 	return raw, err
 }
 
@@ -61,6 +61,6 @@ func (s *Profile) Set(key string, val []byte) ([]byte, error) {
 		return nil, errors.New("Missing user")
 	}
 
-	raw, err := s.GetClient().Put(fmt.Sprintf(PROFILE_SET, user.UUID, key), val, nil)
+	raw, err := s.GetClient().Put(fmt.Sprintf(PROFILE_SET, user.ID, key), val, nil)
 	return raw, err
 }

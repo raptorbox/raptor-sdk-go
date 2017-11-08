@@ -9,7 +9,7 @@ func NewUser() *User {
 
 //User a user account
 type User struct {
-	UUID     string   `json:"uuid"`
+	ID       string   `json:"id"`
 	Username string   `json:"username"`
 	Password string   `json:"password"`
 	Email    string   `json:"email"`
@@ -31,8 +31,8 @@ func (u *User) Merge(u2 *User) error {
 	if len(u2.Roles) > 0 {
 		u.Roles = u2.Roles
 	}
-	if u2.UUID != "" {
-		u.UUID = u2.UUID
+	if u2.ID != "" {
+		u.ID = u2.ID
 	}
 	if u2.Username != "" {
 		u.Username = u2.Username
