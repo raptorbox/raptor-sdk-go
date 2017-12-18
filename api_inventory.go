@@ -1,6 +1,7 @@
 package raptor
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -65,6 +66,23 @@ func (i *Inventory) GetClient() models.Client {
 	return i.Raptor.GetClient()
 }
 
+//Load a device by ID
+func (i *Inventory) Load(ID string) (*models.Device, error) {
+
+	raw, err := i.GetClient().Get(fmt.Sprintf(INVENTORY_LOAD, ID), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	dev := models.NewDevice()
+	err = json.Unmarshal(raw, dev)
+	if err != nil {
+		return nil, err
+	}
+
+	return dev, nil
+}
+
 //List devices accessible by an user
 func (i *Inventory) List() (*models.PagerDevice, error) {
 
@@ -106,7 +124,11 @@ func (i *Inventory) Create(dev *models.Device) error {
 		return err
 	}
 
-	dev.Merge(res)
+	err = dev.Merge(*res)
+	if err != nil {
+		return err
+	}
+
 	dev.EnsureReferences()
 
 	return nil

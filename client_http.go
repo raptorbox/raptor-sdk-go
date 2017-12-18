@@ -129,8 +129,7 @@ func (c *DefaultClient) afterRequest(opts *models.ClientOptions, response gorequ
 		return nil, errors.New("Response is missing")
 	}
 
-	d("Response %d", response.StatusCode)
-	d(string(body))
+	d("Response status %d: %s", response.StatusCode, string(body))
 
 	err := handleErrors(errs)
 	if err != nil {
@@ -167,13 +166,13 @@ func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOp
 	if log.GetLevel() == log.DebugLevel {
 		b, err := c.ToJSON(json)
 		if err == nil {
-			d("Data: %v", string(b))
+			d("Req. body: %v", string(b))
 		} else {
-			d("Data: [ERR: %s]", err.Error())
+			d("Req. body: [ERR: %s]", err.Error())
 		}
 	}
 	response, body, errs := c.prepareRequest(gorequest.POST, url, opts).Send(json).EndBytes()
-	d("Data: %v", json)
+	// d("Req. Data: %v", json)
 	res, err := c.afterRequest(opts, response, body, errs)
 	return res, err
 }
