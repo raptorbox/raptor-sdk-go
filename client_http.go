@@ -93,7 +93,7 @@ func (c *DefaultClient) prepareRequest(method string, url string, opts *models.C
 
 		if authorizationToken != "" {
 			d("Using token %s", authorizationToken)
-			r.Set("Authorization", authorizationToken)
+			r.Set("Authorization", "Bearer "+authorizationToken)
 		}
 	}
 

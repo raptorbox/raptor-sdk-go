@@ -13,5 +13,9 @@ func TestList(t *testing.T) {
 func TestCreate(t *testing.T) {
 	r := doLogin(t)
 	dev := r.Inventory().NewDevice()
-	r.Inventory().Create(dev)
+	dev.Name = "test"
+	err := r.Inventory().Create(dev)
+	if err != nil {
+		t.Fatal(err)
+	}
 }

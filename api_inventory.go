@@ -66,28 +66,18 @@ func (i *Inventory) GetClient() models.Client {
 }
 
 //List devices accessible by an user
-func (i *Inventory) List() ([]models.Device, error) {
+func (i *Inventory) List() (*models.PagerDevice, error) {
 
 	raw, err := i.GetClient().Get(INVENTORY_LIST, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	res := make([]models.Device, 0)
-	err = i.GetClient().FromJSON(raw, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	for i := 0; i < len(res); i++ {
-		res[i].EnsureReferences()
-	}
-
-	return res, nil
+	return models.ParsePagerDevice(raw)
 }
 
 //Search for devices
-func (i *Inventory) Search(q *models.DeviceQuery) ([]models.Device, error) {
+func (i *Inventory) Search(q *models.DeviceQuery) (*models.PagerDevice, error) {
 
 	if q == nil {
 		return nil, errors.New("Query is missing")
@@ -98,17 +88,7 @@ func (i *Inventory) Search(q *models.DeviceQuery) ([]models.Device, error) {
 		return nil, err
 	}
 
-	res := make([]models.Device, 0)
-	err = i.GetClient().FromJSON(raw, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	for i := 0; i < len(res); i++ {
-		res[i].EnsureReferences()
-	}
-
-	return res, nil
+	return models.ParsePagerDevice(raw)
 }
 
 //Create a device
