@@ -43,7 +43,7 @@ func loadApp(ID string, r *Raptor, t *testing.T) *models.App {
 }
 
 func TestAppList(t *testing.T) {
-	r := doLogin(t)
+	r := getTestAdmin(t)
 	_, err := r.App().List()
 	if err != nil {
 		t.Fatal(err)
@@ -51,12 +51,12 @@ func TestAppList(t *testing.T) {
 }
 
 func TestAppCreate(t *testing.T) {
-	r := doLogin(t)
+	r := getTestAdmin(t)
 	createApp(r, t)
 }
 
 func TestAppRead(t *testing.T) {
-	r := doLogin(t)
+	r := getTestAdmin(t)
 	app := createApp(r, t)
 	app1 := loadApp(app.ID, r, t)
 	if app.ID != app1.ID {
@@ -65,12 +65,13 @@ func TestAppRead(t *testing.T) {
 }
 
 func TestAppUpdate(t *testing.T) {
-	r := doLogin(t)
+	r := getTestAdmin(t)
 	app := createApp(r, t)
-	app.Enabled = false
+	name2 := app.Name + "Updated#2"
+	app.Name = name2
 	updateApp(app, r, t)
 	app1 := loadApp(app.ID, r, t)
-	if app1.Enabled {
+	if name2 != app1.Name {
 		t.Fatal("Cannot find updated property")
 	}
 }

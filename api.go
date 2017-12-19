@@ -1,6 +1,17 @@
 package raptor
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"os"
+)
+
+var debugEnabled bool
+
+func init() {
+	if os.Getenv("DEBUG") != "" {
+		debugEnabled = true
+	}
+}
 
 //NewFromConfig create a new Raptor instance from a provided Config
 func NewFromConfig(config *Config) (*Raptor, error) {

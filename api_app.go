@@ -134,7 +134,7 @@ func (i *App) Update(app *models.App) error {
 		return err
 	}
 
-	err = app.Merge(res)
+	err = app.Merge(*res)
 	if err != nil {
 		return err
 	}

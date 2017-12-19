@@ -3,7 +3,6 @@ package raptor
 import (
 	"errors"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/parnurzeal/gorequest"
@@ -11,8 +10,8 @@ import (
 	debug "github.com/tj/go-debug"
 )
 
-var d = debug.Debug("raptor:client:http")
-var debugEnabled = os.Getenv("DEBUG") != ""
+var debugClient = debug.Debug("raptor:client:http")
+var debugClientRaw = debug.Debug("raptor:client:http:raw")
 
 // DefaultClientOptions create default client options
 func DefaultClientOptions() *models.ClientOptions {
@@ -70,7 +69,7 @@ func (c *DefaultClient) prepareRequest(method string, url string, opts *models.C
 	r.Method = method
 	r.Url = c.url(url)
 
-	d("Performing request %s %s", r.Method, r.Url)
+	debugClient("Performing request %s %s", r.Method, r.Url)
 
 	if opts.TextPlain {
 		r.Set("Content-Type", "text/plain")
@@ -93,7 +92,7 @@ func (c *DefaultClient) prepareRequest(method string, url string, opts *models.C
 		}
 
 		if authorizationToken != "" {
-			d("Using token %s", authorizationToken)
+			debugClient("Using token %s", authorizationToken)
 			r.Set("Authorization", "Bearer "+authorizationToken)
 		}
 	}
@@ -115,9 +114,9 @@ func handleErrors(errs []error) error {
 		return nil
 	}
 
-	d("Request errors")
+	debugClient("Request errors")
 	for _, err := range errs {
-		d("- %s", err.Error())
+		debugClient("- %s", err.Error())
 	}
 
 	return errs[0]
@@ -126,11 +125,11 @@ func handleErrors(errs []error) error {
 func (c *DefaultClient) afterRequest(opts *models.ClientOptions, response gorequest.Response, body []byte, errs []error) ([]byte, error) {
 
 	if response == nil {
-		d("Response is missing")
+		debugClient("Response is missing")
 		return nil, errors.New("Response is missing")
 	}
 
-	d("Response status %d: %s", response.StatusCode, string(body))
+	debugClientRaw("Response status %d: %s", response.StatusCode, string(body))
 
 	err := handleErrors(errs)
 	if err != nil {
@@ -167,13 +166,12 @@ func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOp
 	if debugEnabled {
 		b, err := c.ToJSON(json)
 		if err == nil {
-			d("Req. body: %v", string(b))
+			debugClientRaw("Req Body: %v", string(b))
 		} else {
-			d("Req. body: [ERR: %s]", err.Error())
+			debugClientRaw("Req Body: [ERR: %s]", err.Error())
 		}
 	}
 	response, body, errs := c.prepareRequest(gorequest.POST, url, opts).Send(json).EndBytes()
-	// d("Req. Data: %v", json)
 	res, err := c.afterRequest(opts, response, body, errs)
 	return res, err
 }
@@ -183,9 +181,9 @@ func (c *DefaultClient) Put(url string, json interface{}, opts *models.ClientOpt
 	if debugEnabled {
 		b, err := c.ToJSON(json)
 		if err == nil {
-			d("Data: %v", string(b))
+			debugClientRaw("Req Body: %v", string(b))
 		} else {
-			d("Data: [ERR: %s]", err.Error())
+			debugClientRaw("Req Body: [ERR: %s]", err.Error())
 		}
 	}
 	response, body, errs := c.prepareRequest(gorequest.PUT, url, opts).Send(json).EndBytes()
