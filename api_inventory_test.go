@@ -59,12 +59,12 @@ func TestDeviceSearch(t *testing.T) {
 }
 
 func TestDeviceCreate(t *testing.T) {
-	r := getTestUser(t)
+	r := getTestAdmin(t)
 	createDevice(r, t)
 }
 
 func TestDeviceLoad(t *testing.T) {
-	r := getTestUser(t)
+	r := getTestAdmin(t)
 	dev := createDevice(r, t)
 	dev1 := loadDevice(dev.ID, r, t)
 	if dev.ID != dev1.ID {
@@ -73,7 +73,7 @@ func TestDeviceLoad(t *testing.T) {
 }
 
 func TestDeviceUpdate(t *testing.T) {
-	r := getTestUser(t)
+	r := getTestAdmin(t)
 	dev := createDevice(r, t)
 	dev.Properties["foo"] = "bar"
 	updateDevice(dev, r, t)

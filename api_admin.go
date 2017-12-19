@@ -12,6 +12,7 @@ type Admin struct {
 	Raptor *Raptor
 	user   *User
 	token  *Token
+	role   *Role
 }
 
 //User handles Stream API
@@ -20,6 +21,14 @@ func (a *Admin) User() *User {
 		a.user = CreateUser(a.Raptor)
 	}
 	return a.user
+}
+
+//Role handles Roles API
+func (a *Admin) Role() *Role {
+	if a.role == nil {
+		a.role = CreateRole(a.Raptor)
+	}
+	return a.role
 }
 
 //Token handles Stream API
