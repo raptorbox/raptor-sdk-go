@@ -3,14 +3,14 @@ package models
 import "encoding/json"
 
 //Pager request information
-type PagerDevice struct {
+type DevicePager struct {
 	Pager
 	Content []Device `json:"content"`
 }
 
-func ParsePagerDevice(raw []byte) (*PagerDevice, error) {
+func ParseDevicePager(raw []byte) (*DevicePager, error) {
 
-	pager := PagerDevice{
+	pager := DevicePager{
 		Pager: Pager{},
 	}
 	err := json.Unmarshal(raw, &pager)

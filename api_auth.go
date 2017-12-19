@@ -3,9 +3,11 @@ package raptor
 import (
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/raptorbox/raptor-sdk-go/models"
+	debug "github.com/tj/go-debug"
 )
+
+var debugAuth = debug.Debug("raptor:api:auth")
 
 //CreateAuth instantiate a new API client
 func CreateAuth(r *Raptor) *Auth {
@@ -55,7 +57,7 @@ func (a *Auth) Login() (*models.LoginState, error) {
 
 	if a.GetConfig().GetToken() != "" {
 
-		log.Debug("Attempting token authentication")
+		debugAuth("Attempting token authentication")
 
 		user, err1 := a.Raptor.Admin().User().Me()
 		if err1 != nil {
@@ -69,7 +71,7 @@ func (a *Auth) Login() (*models.LoginState, error) {
 
 	} else {
 
-		log.Debug("Attempting credentials authentication")
+		debugAuth("Attempting credentials authentication")
 
 		body := fmt.Sprintf(
 			`{ "username": "%s", "password": "%s" }`,
@@ -81,7 +83,7 @@ func (a *Auth) Login() (*models.LoginState, error) {
 		})
 
 		if err != nil {
-			log.Debugf("Failed to login: %s", err.Error())
+			debugAuth("Failed to login: %s", err.Error())
 			return nil, err
 		}
 
@@ -89,7 +91,7 @@ func (a *Auth) Login() (*models.LoginState, error) {
 		err = a.GetClient().FromJSON(raw, state)
 
 		if err != nil {
-			log.Debugf("Failed to cast response: %s", err.Error())
+			debugAuth("Failed to cast response: %s", err.Error())
 			return nil, err
 		}
 
@@ -98,18 +100,18 @@ func (a *Auth) Login() (*models.LoginState, error) {
 	}
 
 	if err != nil {
-		log.Debugf("Authentication failed: %s", err.Error())
+		debugAuth("Authentication failed: %s", err.Error())
 		return nil, err
 	}
 
-	log.Debugf("Authentication ok, uid %s", a.state.User.ID)
+	debugAuth("Authentication ok, uid %s", a.state.User.ID)
 	return a.state, nil
 }
 
 //Logout logout an user
 func (a *Auth) Logout() error {
 
-	log.Debug("Logout user")
+	debugAuth("Logout user")
 
 	err := a.GetClient().Delete(LOGOUT, nil)
 	if err != nil {
@@ -118,7 +120,7 @@ func (a *Auth) Logout() error {
 
 	a.state = nil
 
-	log.Debug("Logout ok")
+	debugAuth("Logout ok")
 	return nil
 }
 

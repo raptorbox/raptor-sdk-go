@@ -7,9 +7,11 @@ import (
 	"os"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/raptorbox/raptor-sdk-go/models"
+	debug "github.com/tj/go-debug"
 )
+
+var debugRaptor = debug.Debug("raptor:api")
 
 //Raptor the SDK API wrapper
 type Raptor struct {
@@ -22,6 +24,7 @@ type Raptor struct {
 	tree      *Tree
 	action    *Action
 	profile   *Profile
+	app       *App
 	admin     *Admin
 }
 
@@ -44,6 +47,14 @@ func (r *Raptor) Admin() *Admin {
 		r.admin = CreateAdmin(r)
 	}
 	return r.admin
+}
+
+//App handles App API
+func (r *Raptor) App() *App {
+	if r.app == nil {
+		r.app = CreateApp(r)
+	}
+	return r.app
 }
 
 //Auth handles authentication API
@@ -135,12 +146,12 @@ func (r *Raptor) SetConfig(config *Config) error {
 			r.config.URL = r.config.URL[0:lastChar]
 		}
 
-		log.Debugf("Base URL %s", r.config.GetURL())
+		debugRaptor("Base URL %s", r.config.GetURL())
 	}
 
 	_, err := url.Parse(r.config.GetURL())
 	if err != nil {
-		log.Debugf("Cannot parse URL `%s`", r.config.GetURL())
+		debugRaptor("Cannot parse URL `%s`", r.config.GetURL())
 		return err
 	}
 

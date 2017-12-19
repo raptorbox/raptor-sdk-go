@@ -1,4 +1,4 @@
-package raptor_test
+package raptor
 
 import (
 	"testing"

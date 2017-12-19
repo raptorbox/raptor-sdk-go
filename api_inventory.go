@@ -84,18 +84,18 @@ func (i *Inventory) Load(ID string) (*models.Device, error) {
 }
 
 //List devices accessible by an user
-func (i *Inventory) List() (*models.PagerDevice, error) {
+func (i *Inventory) List() (*models.DevicePager, error) {
 
 	raw, err := i.GetClient().Get(INVENTORY_LIST, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return models.ParsePagerDevice(raw)
+	return models.ParseDevicePager(raw)
 }
 
 //Search for devices
-func (i *Inventory) Search(q *models.DeviceQuery) (*models.PagerDevice, error) {
+func (i *Inventory) Search(q *models.DeviceQuery) (*models.DevicePager, error) {
 
 	if q == nil {
 		return nil, errors.New("Query is missing")
@@ -106,7 +106,7 @@ func (i *Inventory) Search(q *models.DeviceQuery) (*models.PagerDevice, error) {
 		return nil, err
 	}
 
-	return models.ParsePagerDevice(raw)
+	return models.ParseDevicePager(raw)
 }
 
 //Create a device
@@ -153,7 +153,10 @@ func (i *Inventory) Update(dev *models.Device) error {
 		return err
 	}
 
-	dev.Merge(res)
+	err = dev.Merge(*res)
+	if err != nil {
+		return err
+	}
 	dev.EnsureReferences()
 
 	return nil

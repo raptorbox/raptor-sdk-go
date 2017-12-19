@@ -17,7 +17,7 @@ type Pager struct {
 	TotalElements    int64       `json:"totalElements"`
 	NumberOfElements int64       `json:"numberOfElements"`
 	Length           int64       `json:"length"`
-	Sort             Sort        `json:"sort"`
+	Sort             []Sort      `json:"sort"`
 	Total            int64       `json:"total"`
 	Size             int64       `json:"size"`
 	Page             int64       `json:"page"`

@@ -3,15 +3,16 @@ package raptor
 import (
 	"errors"
 	"fmt"
+	"os"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/parnurzeal/gorequest"
 	"github.com/raptorbox/raptor-sdk-go/models"
 	debug "github.com/tj/go-debug"
 )
 
 var d = debug.Debug("raptor:client:http")
+var debugEnabled = os.Getenv("DEBUG") != ""
 
 // DefaultClientOptions create default client options
 func DefaultClientOptions() *models.ClientOptions {
@@ -69,7 +70,7 @@ func (c *DefaultClient) prepareRequest(method string, url string, opts *models.C
 	r.Method = method
 	r.Url = c.url(url)
 
-	log.Debugf("Performing request %s %s", r.Method, r.Url)
+	d("Performing request %s %s", r.Method, r.Url)
 
 	if opts.TextPlain {
 		r.Set("Content-Type", "text/plain")
@@ -114,9 +115,9 @@ func handleErrors(errs []error) error {
 		return nil
 	}
 
-	log.Error("Request errors")
+	d("Request errors")
 	for _, err := range errs {
-		log.Warnf("- %s", err.Error())
+		d("- %s", err.Error())
 	}
 
 	return errs[0]
@@ -125,7 +126,7 @@ func handleErrors(errs []error) error {
 func (c *DefaultClient) afterRequest(opts *models.ClientOptions, response gorequest.Response, body []byte, errs []error) ([]byte, error) {
 
 	if response == nil {
-		log.Debug("Response is missing")
+		d("Response is missing")
 		return nil, errors.New("Response is missing")
 	}
 
@@ -163,7 +164,7 @@ func (c *DefaultClient) Delete(url string, opts *models.ClientOptions) error {
 
 //Post request
 func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOptions) ([]byte, error) {
-	if log.GetLevel() == log.DebugLevel {
+	if debugEnabled {
 		b, err := c.ToJSON(json)
 		if err == nil {
 			d("Req. body: %v", string(b))
@@ -179,7 +180,7 @@ func (c *DefaultClient) Post(url string, json interface{}, opts *models.ClientOp
 
 //Put request
 func (c *DefaultClient) Put(url string, json interface{}, opts *models.ClientOptions) ([]byte, error) {
-	if log.GetLevel() == log.DebugLevel {
+	if debugEnabled {
 		b, err := c.ToJSON(json)
 		if err == nil {
 			d("Data: %v", string(b))

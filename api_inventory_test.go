@@ -1,21 +1,20 @@
-package raptor_test
+package raptor
 
 import (
 	"strconv"
 	"testing"
 	"time"
 
-	"github.com/raptorbox/raptor-sdk-go"
 	"github.com/raptorbox/raptor-sdk-go/models"
 )
 
-func newDevice(r *raptor.Raptor) *models.Device {
+func newDevice(r *Raptor) *models.Device {
 	dev := r.Inventory().NewDevice()
 	dev.Name = "test_" + strconv.Itoa(int(time.Now().UnixNano()))
 	return dev
 }
 
-func createDevice(r *raptor.Raptor, t *testing.T) *models.Device {
+func createDevice(r *Raptor, t *testing.T) *models.Device {
 	dev := newDevice(r)
 	dev.ID = "bad id"
 	err := r.Inventory().Create(dev)
@@ -28,14 +27,14 @@ func createDevice(r *raptor.Raptor, t *testing.T) *models.Device {
 	return dev
 }
 
-func updateDevice(dev *models.Device, r *raptor.Raptor, t *testing.T) {
+func updateDevice(dev *models.Device, r *Raptor, t *testing.T) {
 	err := r.Inventory().Update(dev)
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
-func loadDevice(ID string, r *raptor.Raptor, t *testing.T) *models.Device {
+func loadDevice(ID string, r *Raptor, t *testing.T) *models.Device {
 	dev, err := r.Inventory().Load(ID)
 	if err != nil {
 		t.Fatal(err)

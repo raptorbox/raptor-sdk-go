@@ -62,4 +62,11 @@ const (
 	TREE_ADD         = TREE_GET
 	TREE_REMOVE      = TREE_GET
 	TREE_REMOVE_TREE = TREE_GET + "tree"
+
+	APP_LIST   = "/app/"
+	APP_CREATE = APP_LIST
+	APP_SEARCH = APP_LIST + "/search"
+	APP_GET    = APP_LIST + "%s"
+	APP_UPDATE = APP_GET
+	APP_DELETE = APP_GET
 )

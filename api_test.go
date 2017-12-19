@@ -1,22 +1,21 @@
-package raptor_test
+package raptor
 
 import (
 	"os"
 	"testing"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/raptorbox/raptor-sdk-go"
 )
 
-func getTestClient(t *testing.T) *raptor.Raptor {
+func getTestClient(t *testing.T) *Raptor {
 
-	c, err := raptor.NewConfigFromFile("./test.config.json")
+	c, err := NewConfigFromFile("./test.config.json")
 	if err != nil {
 		log.Fatal(err)
 		t.FailNow()
 	}
 
-	raptor, err := raptor.NewFromConfig(c)
+	raptor, err := NewFromConfig(c)
 	if err != nil {
 		log.Fatal(err)
 		t.FailNow()
@@ -25,16 +24,15 @@ func getTestClient(t *testing.T) *raptor.Raptor {
 	return raptor
 }
 
-func doLogin(t *testing.T) *raptor.Raptor {
+func doLogin(t *testing.T) *Raptor {
 
 	r := getTestClient(t)
-	state, err := r.Auth().Login()
+	_, err := r.Auth().Login()
 	if err != nil {
 		log.Fatal(err)
 		t.FailNow()
 	}
 
-	log.Printf("User logged in %s", state.User.Email)
 	return r
 }
 
