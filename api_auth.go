@@ -4,10 +4,7 @@ import (
 	"fmt"
 
 	"github.com/raptorbox/raptor-sdk-go/models"
-	debug "github.com/tj/go-debug"
 )
-
-var debugAuth = debug.Debug("raptor:api:auth")
 
 //CreateAuth instantiate a new API client
 func CreateAuth(r *Raptor) *Auth {
@@ -56,9 +53,6 @@ func (a *Auth) Login() (*models.LoginState, error) {
 	var err error
 
 	if a.GetConfig().GetToken() != "" {
-
-		debugAuth("Attempting token authentication")
-
 		user, err1 := a.Raptor.Admin().User().Me()
 		if err1 != nil {
 			return nil, err1
@@ -70,9 +64,6 @@ func (a *Auth) Login() (*models.LoginState, error) {
 		}
 
 	} else {
-
-		debugAuth("Attempting credentials authentication")
-
 		body := fmt.Sprintf(
 			`{ "username": "%s", "password": "%s" }`,
 			a.GetConfig().GetUsername(),
@@ -83,7 +74,6 @@ func (a *Auth) Login() (*models.LoginState, error) {
 		})
 
 		if err != nil {
-			debugAuth("Failed to login: %s", err.Error())
 			return nil, err
 		}
 
@@ -91,7 +81,6 @@ func (a *Auth) Login() (*models.LoginState, error) {
 		err = a.GetClient().FromJSON(raw, state)
 
 		if err != nil {
-			debugAuth("Failed to cast response: %s", err.Error())
 			return nil, err
 		}
 
@@ -100,27 +89,19 @@ func (a *Auth) Login() (*models.LoginState, error) {
 	}
 
 	if err != nil {
-		debugAuth("Authentication failed: %s", err.Error())
 		return nil, err
 	}
 
-	debugAuth("Authentication ok, uid %s", a.state.User.ID)
 	return a.state, nil
 }
 
 //Logout logout an user
 func (a *Auth) Logout() error {
-
-	debugAuth("Logout user")
-
 	err := a.GetClient().Delete(LOGOUT, nil)
 	if err != nil {
 		return err
 	}
-
 	a.state = nil
-
-	debugAuth("Logout ok")
 	return nil
 }
 

@@ -8,10 +8,7 @@ import (
 	"strings"
 
 	"github.com/raptorbox/raptor-sdk-go/models"
-	debug "github.com/tj/go-debug"
 )
-
-var debugRaptor = debug.Debug("raptor:api")
 
 //Raptor the SDK API wrapper
 type Raptor struct {
@@ -146,12 +143,10 @@ func (r *Raptor) SetConfig(config *Config) error {
 			r.config.URL = r.config.URL[0:lastChar]
 		}
 
-		debugRaptor("Base URL %s", r.config.GetURL())
 	}
 
 	_, err := url.Parse(r.config.GetURL())
 	if err != nil {
-		debugRaptor("Cannot parse URL `%s`", r.config.GetURL())
 		return err
 	}
 

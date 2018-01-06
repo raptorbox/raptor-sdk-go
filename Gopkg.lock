@@ -32,10 +32,10 @@
   version = "v0.8.0"
 
 [[projects]]
-  name = "github.com/tj/go-debug"
+  name = "github.com/sirupsen/logrus"
   packages = ["."]
-  revision = "ff4a55a20a86994118644bbddc6a216da193cc13"
-  version = "v2.0.0"
+  revision = "f006c2ac4710855cf0f916dd6b77acf6b048dc6e"
+  version = "v1.0.3"
 
 [[projects]]
   branch = "master"
@@ -64,6 +64,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a93abddf183c156fcbd662cd9d1c78e3cc6f9cf68773d29ee48175b30626bdac"
+  inputs-digest = "c02f72875e53d5d92429cb9bc7a70c5ff7d9375601143eaf6cb30b8dbb7b4295"
   solver-name = "gps-cdcl"
   solver-version = 1
