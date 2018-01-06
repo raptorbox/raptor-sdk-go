@@ -42,7 +42,7 @@ func loadDevice(ID string, r *Raptor, t *testing.T) *models.Device {
 	return dev
 }
 
-func TestList(t *testing.T) {
+func TestDeviceList(t *testing.T) {
 	r := doLogin(t)
 	_, err := r.Inventory().List()
 	if err != nil {
@@ -50,7 +50,7 @@ func TestList(t *testing.T) {
 	}
 }
 
-func TestSearch(t *testing.T) {
+func TestDeviceSearch(t *testing.T) {
 	r := doLogin(t)
 	_, err := r.Inventory().List()
 	if err != nil {
@@ -58,13 +58,13 @@ func TestSearch(t *testing.T) {
 	}
 }
 
-func TestCreate(t *testing.T) {
-	r := doLogin(t)
+func TestDeviceCreate(t *testing.T) {
+	r := getTestAdmin(t)
 	createDevice(r, t)
 }
 
-func TestLoad(t *testing.T) {
-	r := doLogin(t)
+func TestDeviceLoad(t *testing.T) {
+	r := getTestAdmin(t)
 	dev := createDevice(r, t)
 	dev1 := loadDevice(dev.ID, r, t)
 	if dev.ID != dev1.ID {
@@ -72,8 +72,8 @@ func TestLoad(t *testing.T) {
 	}
 }
 
-func TestUpdate(t *testing.T) {
-	r := doLogin(t)
+func TestDeviceUpdate(t *testing.T) {
+	r := getTestAdmin(t)
 	dev := createDevice(r, t)
 	dev.Properties["foo"] = "bar"
 	updateDevice(dev, r, t)
