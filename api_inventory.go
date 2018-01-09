@@ -80,6 +80,8 @@ func (i *Inventory) Load(ID string) (*models.Device, error) {
 		return nil, err
 	}
 
+	dev.EnsureReferences()
+
 	return dev, nil
 }
 
@@ -90,8 +92,14 @@ func (i *Inventory) List() (*models.DevicePager, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	return models.ParseDevicePager(raw)
+	pager, err := models.ParseDevicePager(raw)
+	if err != nil {
+		return nil, err
+	}
+	for i := range pager.Content {
+		pager.Content[i].EnsureReferences()
+	}
+	return pager, nil
 }
 
 //Search for devices
@@ -105,8 +113,14 @@ func (i *Inventory) Search(q *models.DeviceQuery) (*models.DevicePager, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	return models.ParseDevicePager(raw)
+	pager, err := models.ParseDevicePager(raw)
+	if err != nil {
+		return nil, err
+	}
+	for i := range pager.Content {
+		pager.Content[i].EnsureReferences()
+	}
+	return pager, nil
 }
 
 //Create a device

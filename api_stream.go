@@ -59,6 +59,14 @@ func (s *Stream) Pull(stream *models.Stream, offset int, size int) ([]models.Rec
 //LastUpdate fetch the last record stored
 func (s *Stream) LastUpdate(stream *models.Stream) (*models.Record, error) {
 
+	if stream == nil {
+		return nil, errors.New("Stream is empty")
+	}
+
+	if stream.GetDevice() == nil {
+		return nil, errors.New("Stream device is empty")
+	}
+
 	raw, err := s.GetClient().Get(fmt.Sprintf(STREAM_LAST_UPDATE, stream.GetDevice().ID, stream.Name), nil)
 	if err != nil {
 		return nil, err
