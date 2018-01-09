@@ -2,12 +2,13 @@ package models
 
 import "encoding/json"
 
-//Pager request information
+//DevicePager request information
 type DevicePager struct {
 	Pager
 	Content []Device `json:"content"`
 }
 
+//ParseDevicePager parse a device pager
 func ParseDevicePager(raw []byte) (*DevicePager, error) {
 
 	pager := DevicePager{

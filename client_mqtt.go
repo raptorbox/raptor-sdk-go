@@ -4,7 +4,6 @@ import (
 	"net/url"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/raptorbox/raptor-sdk-go/models"
 )

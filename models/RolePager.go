@@ -2,7 +2,7 @@ package models
 
 import "encoding/json"
 
-//Pager request information
+//RolePager request information
 type RolePager struct {
 	Pager
 	Content []Role `json:"content"`

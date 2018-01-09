@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strconv"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/raptorbox/raptor-sdk-go/models"
 )
 
@@ -29,6 +28,11 @@ func (s *Stream) GetConfig() models.Config {
 //GetClient return a client instance
 func (s *Stream) GetClient() models.Client {
 	return s.Raptor.GetClient()
+}
+
+//NewRecord return a new record instance
+func (s *Stream) NewRecord(s1 *models.Stream) *models.Record {
+	return models.NewRecord(s1)
 }
 
 //Pull stored data for a stream

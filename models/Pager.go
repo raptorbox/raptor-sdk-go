@@ -23,3 +23,13 @@ type Pager struct {
 	Page             int64       `json:"page"`
 	Content          interface{} `json:"content"`
 }
+
+//Len return the pager length
+func (p *Pager) Len() int64 {
+	return p.Length
+}
+
+//IsEmpty check if there is content
+func (p *Pager) IsEmpty() bool {
+	return p.Length == 0
+}

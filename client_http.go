@@ -3,16 +3,14 @@ package raptor
 import (
 	"errors"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/parnurzeal/gorequest"
 	"github.com/raptorbox/raptor-sdk-go/models"
-	log "github.com/sirupsen/logrus"
 )
 
+var log = getLogger()
 var d = log.WithField("r", "client:http")
-var debugEnabled = os.Getenv("DEBUG") != ""
 
 // DefaultClientOptions create default client options
 func DefaultClientOptions() *models.ClientOptions {
