@@ -3,7 +3,7 @@ package raptor
 import (
 	"os"
 
-	"github.com/sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 )
 
 var logger = logrus.New()

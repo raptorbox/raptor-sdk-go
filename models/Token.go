@@ -9,7 +9,7 @@ func NewToken() *Token {
 
 //Token a token identifier
 type Token struct {
-	ID      int    `json:"id"`
+	ID      string `json:"id"`
 	Name    string `json:"name"`
 	Token   string `json:"token"`
 	Secret  string `json:"secret"`
@@ -20,7 +20,7 @@ type Token struct {
 //Merge a token with another instance
 func (t *Token) Merge(t1 *Token) error {
 
-	if t1.ID != 0 {
+	if t1.ID != "" {
 		t.ID = t1.ID
 	}
 	if t1.Name != "" {

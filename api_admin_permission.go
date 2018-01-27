@@ -2,7 +2,6 @@ package raptor
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/raptorbox/raptor-sdk-go/models"
 )
@@ -46,8 +45,8 @@ func CreatePermission(r *Raptor, subjectType SubjectType) Permission {
 type Permission interface {
 	GetConfig() models.Config
 	GetClient() models.Client
-	Get(subjectID int) ([]string, error)
-	Set(subjectID int, userID string, permissions []string) ([]string, error)
+	Get(subjectID string) ([]string, error)
+	Set(subjectID string, userID string, permissions []string) ([]string, error)
 }
 
 //GenericPermission API client abstract per subject ACL permission management
@@ -67,9 +66,9 @@ func (s *GenericPermission) GetClient() models.Client {
 }
 
 //Get the available device permissions
-func (s *GenericPermission) Get(subjectID int) ([]string, error) {
+func (s *GenericPermission) Get(subjectID string) ([]string, error) {
 
-	raw, err := s.GetClient().Get(fmt.Sprintf(PERMISSION_GET, s.subjectType, strconv.Itoa(subjectID)), nil)
+	raw, err := s.GetClient().Get(fmt.Sprintf(PERMISSION_GET, s.subjectType, subjectID), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -84,13 +83,13 @@ func (s *GenericPermission) Get(subjectID int) ([]string, error) {
 }
 
 //Set the token permissions
-func (s *GenericPermission) Set(subjectID int, userID string, permissions []string) ([]string, error) {
+func (s *GenericPermission) Set(subjectID string, userID string, permissions []string) ([]string, error) {
 
 	body := make(map[string]interface{})
 	body["user"] = userID
 	body["permissions"] = permissions
 
-	raw, err := s.GetClient().Put(fmt.Sprintf(PERMISSION_SET, s.subjectType, strconv.Itoa(subjectID)), body, nil)
+	raw, err := s.GetClient().Put(fmt.Sprintf(PERMISSION_SET, s.subjectType, subjectID), body, nil)
 	if err != nil {
 		return nil, err
 	}

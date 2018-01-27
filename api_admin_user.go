@@ -29,19 +29,35 @@ func (s *User) GetClient() models.Client {
 }
 
 //List the available users
-func (s *User) List() ([]models.User, error) {
+func (s *User) List() (*models.UserPager, error) {
 	raw, err := s.GetClient().Get(USER_LIST, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	res := make([]models.User, 0)
-	err = s.GetClient().FromJSON(raw, &res)
+	// pager := models.Pager{}
+	// err = s.GetClient().FromJSON(raw, &pager)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	return models.ParseUserPager(raw)
+}
+
+//searhc user by name
+func (s *User) SearchByUsername(username string) (*models.UserPager, error) {
+	raw, err := s.GetClient().Get(USER_LIST+"&username="+username, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return res, nil
+	// pager := models.Pager{}
+	// err = s.GetClient().FromJSON(raw, &pager)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	return models.ParseUserPager(raw)
 }
 
 //Read an user

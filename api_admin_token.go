@@ -40,7 +40,7 @@ func (s *Token) GetClient() models.Client {
 }
 
 //List the available token for the current user
-func (s *Token) List() ([]models.Token, error) {
+func (s *Token) List() (*models.TokenPager, error) {
 
 	user := s.Raptor.Auth().GetUser()
 	if user == nil {
@@ -51,20 +51,20 @@ func (s *Token) List() ([]models.Token, error) {
 }
 
 //ListByID the available token for a user
-func (s *Token) ListByID(uuid string) ([]models.Token, error) {
+func (s *Token) ListByID(uuid string) (*models.TokenPager, error) {
 
 	raw, err := s.GetClient().Get(fmt.Sprintf(TOKEN_LIST, uuid), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	res := make([]models.Token, 0)
-	err = s.GetClient().FromJSON(raw, &res)
-	if err != nil {
-		return nil, err
-	}
+	// res := make([]models.Token, 0)
+	// err = s.GetClient().FromJSON(raw, &res)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	return res, nil
+	return models.ParseTokenPager(raw)
 }
 
 //Read a token
@@ -100,7 +100,7 @@ func (s *Token) Create(token *models.Token) error {
 
 //Update a token
 func (s *Token) Update(token *models.Token) error {
-	raw, err := s.GetClient().Put(fmt.Sprintf(TOKEN_UPDATE, strconv.Itoa(token.ID)), token, nil)
+	raw, err := s.GetClient().Put(fmt.Sprintf(TOKEN_UPDATE, token.ID), token, nil)
 	if err != nil {
 		return err
 	}
@@ -115,6 +115,6 @@ func (s *Token) Update(token *models.Token) error {
 
 //Delete an user
 func (s *Token) Delete(token *models.Token) error {
-	err := s.GetClient().Delete(fmt.Sprintf(TOKEN_DELETE, strconv.Itoa(token.ID)), nil)
+	err := s.GetClient().Delete(fmt.Sprintf(TOKEN_DELETE, token.ID), nil)
 	return err
 }
