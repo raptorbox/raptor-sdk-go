@@ -8,6 +8,7 @@ type TokenPager struct {
 	Content []Token `json:"content"`
 }
 
+// ParseTokenPager parses the pager
 func ParseTokenPager(raw []byte) (*TokenPager, error) {
 
 	pager := TokenPager{

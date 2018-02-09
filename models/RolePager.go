@@ -8,6 +8,7 @@ type RolePager struct {
 	Content []Role `json:"content"`
 }
 
+// ParseRolePager parses the pager
 func ParseRolePager(raw []byte) (*RolePager, error) {
 
 	pager := RolePager{

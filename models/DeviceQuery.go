@@ -6,6 +6,7 @@ type DeviceQuery struct {
 	AppID       *TextQuery `json:"appId,omitempty"`
 	Name        *TextQuery `json:"name,omitempty"`
 	Description *TextQuery `json:"description,omitempty"`
+	Domain      *TextQuery `json:"domain,omitempty"`
 	Properties  *MapQuery  `json:"properties,omitempty"`
 }
 
@@ -14,6 +15,7 @@ func NewDeviceQuery() *DeviceQuery {
 	q := &DeviceQuery{
 		Name:        NewTextQuery(),
 		Description: NewTextQuery(),
+		Domain:      NewTextQuery(),
 		ID:          NewTextQuery(),
 		AppID:       NewTextQuery(),
 		Properties:  NewMapQuery(),

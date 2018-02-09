@@ -2,12 +2,13 @@ package models
 
 import "encoding/json"
 
-//Pager request information
+//AppPager request information
 type AppPager struct {
 	Pager
 	Content []App `json:"content"`
 }
 
+// ParseAppPager parses the pager
 func ParseAppPager(raw []byte) (*AppPager, error) {
 
 	pager := AppPager{

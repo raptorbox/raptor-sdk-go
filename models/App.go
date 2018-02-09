@@ -5,8 +5,9 @@ import "errors"
 //NewApp instantiate a new device
 func NewApp() *App {
 	return &App{
-		Roles: make([]AppRole, 0),
-		Users: make([]AppUser, 0),
+		Roles:      make([]AppRole, 0),
+		Users:      make([]AppUser, 0),
+		Properties: make(map[string]interface{}),
 	}
 }
 
@@ -25,12 +26,13 @@ type AppUser struct {
 
 //App a definition of an app
 type App struct {
-	ID      string    `json:"id,omitempty"`
-	Name    string    `json:"name"`
-	Enabled bool      `json:"enabled,omitempty"`
-	UserID  string    `json:"userId"`
-	Roles   []AppRole `json:"roles,omitempty"`
-	Users   []AppUser `json:"users,omitempty"`
+	ID         string                 `json:"id,omitempty"`
+	Name       string                 `json:"name"`
+	Enabled    bool                   `json:"enabled,omitempty"`
+	UserID     string                 `json:"userId"`
+	Roles      []AppRole              `json:"roles,omitempty"`
+	Users      []AppUser              `json:"users,omitempty"`
+	Properties map[string]interface{} `json:"properties,omitempty"`
 }
 
 //GetID return the App ID
@@ -61,6 +63,15 @@ func (a *App) Merge(raw interface{}) error {
 		a.Users = make([]AppUser, 0)
 		for _, val := range a1.Users {
 			a.Users = append(a.Users, val)
+		}
+	}
+
+	if len(a1.Properties) > 0 {
+		if a.Properties == nil {
+			a.Properties = make(map[string]interface{})
+		}
+		for key, val := range a1.Properties {
+			a.Properties[key] = val
 		}
 	}
 

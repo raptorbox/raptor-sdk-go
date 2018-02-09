@@ -8,6 +8,7 @@ type UserPager struct {
 	Content []User `json:"content"`
 }
 
+// ParseUserPager parses the pager
 func ParseUserPager(raw []byte) (*UserPager, error) {
 
 	pager := UserPager{

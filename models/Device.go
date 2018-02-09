@@ -29,6 +29,7 @@ type Device struct {
 	UserID      string                 `json:"userId,omitempty"`
 	Name        string                 `json:"name,omitempty"`
 	Description string                 `json:"description,omitempty"`
+	Domain      string                 `json:"domain,omitempty"`
 	Settings    *Settings              `json:"settings,omitempty"`
 	Properties  map[string]interface{} `json:"properties,omitempty"`
 	Streams     map[string]*Stream     `json:"streams,omitempty"`
@@ -76,6 +77,7 @@ func (d *Device) Merge(raw interface{}) error {
 	d.UserID = d1.UserID
 	d.Name = d1.Name
 	d.Description = d1.Description
+	d.Domain = d1.Domain
 
 	if d1.Settings != nil {
 
