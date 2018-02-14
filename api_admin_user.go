@@ -44,9 +44,9 @@ func (s *User) List() (*models.UserPager, error) {
 	return models.ParseUserPager(raw)
 }
 
-//searhc user by name
+// SearchByUsername user by name
 func (s *User) SearchByUsername(username string) (*models.UserPager, error) {
-	raw, err := s.GetClient().Get(USER_LIST+"&username="+username, nil)
+	raw, err := s.GetClient().Get(USER_LIST+"?username="+username, nil)
 	if err != nil {
 		return nil, err
 	}
