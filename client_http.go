@@ -123,17 +123,18 @@ func handleErrors(errs []error) error {
 
 func (c *DefaultClient) afterRequest(opts *models.ClientOptions, response gorequest.Response, body []byte, errs []error) ([]byte, error) {
 
-	if response == nil {
-		d.Debug("Response is missing")
-		return nil, errors.New("Response is missing")
-	}
-
-	d.Debugf("Response status %d: %s", response.StatusCode, string(body))
-
 	err := handleErrors(errs)
 	if err != nil {
 		return nil, err
 	}
+
+	if response == nil {
+		d.Debug("Response is missing")
+		d.Debugf("Body: %s", string(body))
+		return nil, errors.New("Response is missing")
+	}
+
+	d.Debugf("Response status %d: %s", response.StatusCode, string(body))
 
 	if response.StatusCode >= 400 {
 		err = fmt.Errorf("Request failed with %s: %s", response.Status, string(body))
