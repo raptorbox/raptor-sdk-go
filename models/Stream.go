@@ -19,7 +19,6 @@ type Stream struct {
 	Channels    map[string]*Channel `json:"channels,omitempty"`
 	DeviceID    string              `json:"deviceId,omitempty"`
 	UserID      string              `json:"userId,omitempty"`
-	Raw         string              `json:"raw,omitempty"`
 }
 
 //GetChannel return the device

@@ -28,6 +28,7 @@ type Record struct {
 	StreamID  string                 `json:"streamId"`
 	DeviceID  string                 `json:"deviceId"`
 	UserID    string                 `json:"userId"`
+	Raw       string                 `json:"raw,omitempty"`
 }
 
 //GetStream return the reference stream
