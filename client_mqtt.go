@@ -2,7 +2,9 @@ package raptor
 
 import (
 	"net/url"
+	"strconv"
 	"strings"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/raptorbox/raptor-sdk-go/models"
@@ -51,7 +53,8 @@ func (c *DefaultClient) GetBrokerClient() (mqtt.Client, error) {
 	mqttURI += "://" + u.Hostname() + ":" + mqttPort
 
 	log.Debugf("MQTT uri %s", mqttURI)
-	opts := mqtt.NewClientOptions().AddBroker(mqttURI)
+	clientid := "raptorbox_mqttjs_ans_asdfghqwerty_go_" + strconv.Itoa(time.Now().Second())
+	opts := mqtt.NewClientOptions().AddBroker(mqttURI).SetClientID(clientid)
 	client := mqtt.NewClient(opts)
 	c.brokerConnection.client = client
 

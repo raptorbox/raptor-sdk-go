@@ -24,15 +24,31 @@ type AppUser struct {
 	Enabled bool     `json:"enabled"`
 }
 
+//AppDelta an app user
+type AppDelta struct {
+	DeletedUsers  []AppUser `json:"deletedUsers,omitempty"`
+	UserOldRoles  []AppRole `json:"userOldRoles,omitempty"`
+	DeleteDevices []string  `json:"deleteDevices,omitempty"`
+}
+
+//AppPayloadCodec an app user
+type AppPayloadCodec struct {
+	ID          string `json:"id,omitempty"`
+	Name        string `json:"name,omitempty"`
+	CodecString string `json:"codec_string,omitempty"`
+	Codec       string `json:"codec,omitempty"`
+}
+
 //App a definition of an app
 type App struct {
-	ID         string                 `json:"id,omitempty"`
-	Name       string                 `json:"name"`
-	Enabled    bool                   `json:"enabled,omitempty"`
-	UserID     string                 `json:"userId"`
-	Roles      []AppRole              `json:"roles,omitempty"`
-	Users      []AppUser              `json:"users,omitempty"`
-	Properties map[string]interface{} `json:"properties,omitempty"`
+	ID           string                 `json:"id,omitempty"`
+	Name         string                 `json:"name"`
+	Enabled      bool                   `json:"enabled,omitempty"`
+	UserID       string                 `json:"userId"`
+	Roles        []AppRole              `json:"roles,omitempty"`
+	Users        []AppUser              `json:"users,omitempty"`
+	Properties   map[string]interface{} `json:"properties,omitempty"`
+	PayloadCodec AppPayloadCodec        `json:"payload_codec,omitempty"`
 }
 
 //GetID return the App ID
