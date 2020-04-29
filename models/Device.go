@@ -28,6 +28,7 @@ type Device struct {
 	ID          string                 `json:"id,omitempty"`
 	UserID      string                 `json:"userId,omitempty"`
 	Name        string                 `json:"name,omitempty"`
+	DevType     string                 `json:"devType,omitempty"`
 	Description string                 `json:"description,omitempty"`
 	Domain      string                 `json:"domain,omitempty"`
 	Settings    *Settings              `json:"settings,omitempty"`
@@ -76,6 +77,7 @@ func (d *Device) Merge(raw interface{}) error {
 	d.ID = d1.ID
 	d.UserID = d1.UserID
 	d.Name = d1.Name
+	d.DevType = d1.DevType
 	d.Description = d1.Description
 	d.Domain = d1.Domain
 
